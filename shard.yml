@@ -7,3 +7,8 @@ authors:
 
 description: |
   Simple distributed blockchain experiment written in Crystal
+
+dependencies:
+  kemal:
+    github:  kemalcr/kemal
+    version: "~> 0.25.1"
