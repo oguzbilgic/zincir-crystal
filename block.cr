@@ -34,12 +34,6 @@ class Block
     Block.new previous.index + 1, Time.now.to_unix, data, previous.hash
   end
 
-  def self.from_json_str(str)
-    block_hash = JSON.parse(str)
-
-    Block.new block_hash["index"].to_i, block_hash["timestamp"], block_hash["data"], block_hash["previous_hash"], block_hash["nonce"].to_i, block_hash["hash"]
-  end
-
   def to_hash
     { index: index, timestamp: timestamp, data: data, previous_hash: previous_hash, nonce: nonce, hash: hash }
   end
