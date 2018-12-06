@@ -34,10 +34,6 @@ class Block
     Block.new previous.index + 1, Time.now.to_unix, data, previous.hash
   end
 
-  def to_hash
-    { index: index, timestamp: timestamp, data: data, previous_hash: previous_hash, nonce: nonce, hash: hash }
-  end
-
   def to_s
     "#{@hash} #{@index}"
   end
