@@ -3,28 +3,24 @@ require "digest"
 
 class Block
   property hash : String
+  getter index
+  getter hash
 
-  def initialize(@index : Int32, @timestamp : Int32, @data : String, @previous_hash : String)
+  def initialize(@index : Int32, @timestamp : Int64, @data : String, @previous_hash : String)
     @nonce = solve_block
     @hash = calculate_hash @nonce
   end
 
-  def initialize(@index : Int32, @timestamp : Int32, @data : String, @previous_hash : String, nonce : Int32, hash : String)
-    unless nonce && hash
-      @nonce, @hash = solve_block
-    else
-      @nonce = nonce
-      @hash = hash
-      verify!
-    end
+  def initialize(@index : Int32, @timestamp : Int64, @data : String, @previous_hash : String, @nonce : Int32, @hash : String)
+    verify!
   end
 
   def self.first
     Block.new 0, 0, "Genesis", "0"
   end
 
-  def self.next(previous, data)
-    Block.new previous.index + 1, Time.now.to_i, data, previous.hash
+  def self.next(previous : Block, data)
+    Block.new previous.index + 1, Time.now.to_unix, data, previous.hash
   end
 
   def self.from_json_str(str)
