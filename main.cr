@@ -2,9 +2,14 @@
 require "digest"
 
 class Block
-  # attr_reader :index, :timestamp, :data, :previous_hash, :nonce, :hash
+  property hash : String
 
-  def initialize(@index : Int32, @timestamp : Int32, @data : String, @previous_hash : String, nonce : Int32 = nil, hash : String = nil)
+  def initialize(@index : Int32, @timestamp : Int32, @data : String, @previous_hash : String)
+    @nonce = solve_block
+    @hash = calculate_hash @nonce
+  end
+
+  def initialize(@index : Int32, @timestamp : Int32, @data : String, @previous_hash : String, nonce : Int32, hash : String)
     unless nonce && hash
       @nonce, @hash = solve_block
     else
@@ -15,7 +20,7 @@ class Block
   end
 
   def self.first
-    Block.new 0, 0, "Genesis", "0", 0, ""
+    Block.new 0, 0, "Genesis", "0"
   end
 
   def self.next(previous, data)
@@ -42,21 +47,20 @@ class Block
     raise "invalid" if calculated_hash != @hash
   end
 
-  def solve_block(difficulty="00000")
-    nonce = 0
+  def solve_block(difficulty = "00000", nonce = 0)
     loop do
       hash = calculate_hash nonce
-      if hash.start_with? difficulty
-        return [nonce,hash]
-      else
-        nonce += 1
-      end
+
+      return nonce if hash.starts_with? difficulty
+
+      nonce += 1
     end
   end
 
-  def calculate_hash(nonce = 0)
+  def calculate_hash(nonce)
     Digest::SHA1.hexdigest nonce.to_s + @index.to_s + @timestamp.to_s + @data + @previous_hash
   end
 end
 
 block = Block.first
+puts block.hash
