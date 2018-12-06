@@ -1,21 +1,23 @@
 require "openssl"
 
 class Block
-  property hash : String
-  getter index
-  getter hash
+  property index : Int32
+  property timestamp : Int64
+  property data : String
+  property previous_hash : String
+  property nonce : Int32, hash : String
 
-  def initialize(@index : Int32, @timestamp : Int64, @data : String, @previous_hash : String)
+  def initialize(@index, @timestamp, @data, @previous_hash)
     @nonce = solve_block
     @hash = calculate_hash @nonce
   end
 
-  def initialize(@index : Int32, @timestamp : Int64, @data : String, @previous_hash : String, @nonce : Int32, @hash : String)
+  def initialize(@index, @timestamp, @data, @previous_hash, @nonce, @hash)
     verify!
   end
 
   def self.first
-    Block.new 0, 0, "Genesis", "0"
+    Block.new 0, 0_i64, "Genesis", "0"
   end
 
   def self.next(previous : Block, data)
