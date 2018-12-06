@@ -30,8 +30,8 @@ class Block
     Block.new previous.index + 1, Time.now.to_unix, data, previous.hash
   end
 
-  def to_s
-    "#{@hash} #{@index}"
+  def to_s(io)
+    io << "#{@hash} #{@index}"
   end
 
   def verify!
