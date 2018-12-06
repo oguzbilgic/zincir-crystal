@@ -1,5 +1,4 @@
-# require 'json'
-require "digest"
+require "openssl"
 
 class Block
   property hash : String
@@ -38,9 +37,7 @@ class Block
   end
 
   def verify!
-    calculated_hash = calculate_hash @nonce
-
-    raise "invalid" if calculated_hash != @hash
+    raise "invalid" if @hash != calculate_hash @nonce
   end
 
   def solve_block(difficulty = "00000", nonce = 0)
@@ -54,6 +51,8 @@ class Block
   end
 
   def calculate_hash(nonce)
-    Digest::SHA1.hexdigest nonce.to_s + @index.to_s + @timestamp.to_s + @data + @previous_hash
+    hash = OpenSSL::Digest.new "SHA256"
+    hash.update nonce.to_s + @index.to_s + @timestamp.to_s + @data + @previous_hash
+    hash.hexdigest
   end
 end
