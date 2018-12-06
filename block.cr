@@ -1,4 +1,5 @@
 require "openssl"
+require "json"
 
 class Block
   property index : Int32
@@ -6,6 +7,15 @@ class Block
   property data : String
   property previous_hash : String
   property nonce : Int32, hash : String
+
+  JSON.mapping(
+    index: Int32,
+    timestamp: Int64,
+    data: String,
+    previous_hash: String,
+    nonce: Int32,
+    hash: String
+  )
 
   def initialize(@index, @timestamp, @data, @previous_hash)
     @nonce = solve_block
