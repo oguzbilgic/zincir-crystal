@@ -11,7 +11,7 @@ class Block
     hash: String
   )
 
-  def initialize(@index : Int32, @timestamp : Int64, @data : String, @previous_hash : String)
+  def initialize(@index, @timestamp, @data, @previous_hash)
     @nonce = solve_block
     @hash = calculate_hash @nonce
   end
@@ -20,7 +20,7 @@ class Block
     Block.new 0, 0_i64, "Genesis", "0"
   end
 
-  def self.next(previous : Block, data)
+  def self.next(previous, data)
     Block.new previous.index + 1, Time.now.to_unix, data, previous.hash
   end
 
