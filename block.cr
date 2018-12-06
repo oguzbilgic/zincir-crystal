@@ -22,10 +22,6 @@ class Block
     @hash = calculate_hash @nonce
   end
 
-  def initialize(@index, @timestamp, @data, @previous_hash, @nonce, @hash)
-    verify!
-  end
-
   def self.first
     Block.new 0, 0_i64, "Genesis", "0"
   end
