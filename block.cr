@@ -12,8 +12,7 @@ class Block
   )
 
   def initialize(@index, @timestamp, @data, @previous_hash)
-    @nonce = solve_block
-    @hash = calculate_hash @nonce
+    @nonce, @hash = solve_block
   end
 
   def self.first
@@ -25,7 +24,7 @@ class Block
   end
 
   def to_s(io)
-    io << "#{@hash} #{@index}"
+    io << "#{@hash} #{@index} #{@nonce}"
   end
 
   def verify!
@@ -36,7 +35,7 @@ class Block
     loop do
       hash = calculate_hash nonce
 
-      return nonce if hash.starts_with? difficulty
+      return {nonce, hash} if hash.starts_with? difficulty
 
       nonce += 1
     end
