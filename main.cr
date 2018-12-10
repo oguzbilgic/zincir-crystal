@@ -6,7 +6,7 @@ blockchain = Blockchain.new
 # logging false
 
 get "/blocks" do
-  blockchain.blocks.to_json
+  blockchain.last.to_json
 end
 
 get "/blocks/:index" do |env|

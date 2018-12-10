@@ -1,8 +1,6 @@
 require "./block.cr"
 
 class Blockchain
-  getter blocks
-
   def initialize
     @blocks = [Block.first]
     @relayed_blocks = [] of Block
