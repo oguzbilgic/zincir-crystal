@@ -5,6 +5,11 @@ blockchain = Blockchain.new
 
 # logging false
 
+post "/relay" do |env|
+  block = Block.from_json env.request.body.not_nil!
+  blockchain.add_relayed_block block
+end
+
 get "/blocks" do
   blockchain.last.to_json
 end

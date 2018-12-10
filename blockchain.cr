@@ -14,6 +14,10 @@ class Blockchain
     @blocks[index]
   end
 
+  def add_relayed_block(block)
+    @relayed_blocks << block
+  end
+
   def work!
     loop do
       next_block = Block.next self.last, "Transaction Data..."
