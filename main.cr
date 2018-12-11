@@ -28,4 +28,4 @@ spawn do
   blockchain.work!
 end
 
-Fiber.yield
+sleep

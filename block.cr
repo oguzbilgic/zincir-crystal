@@ -38,6 +38,7 @@ class Block
       return {nonce, hash} if hash.starts_with? difficulty
 
       nonce += 1
+      Fiber.yield
     end
   end
 
