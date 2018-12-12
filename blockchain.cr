@@ -27,14 +27,24 @@ class Blockchain
       next_block = @relayed_blocks.shift
 
       if next_block.index < last.index + 1
-        puts "Discarding relayed block for index " + next_block.index.to_s
+        our_block = block_at next_block.index
+
+        if our_block.timestamp > next_block.timestamp
+          puts "Picking relayed block for index #{next_block.index}"
+          @blocks = @blocks[0..next_block.index]
+          @blocks << next_block
+        elsif our_block.hash == next_block.hash
+          puts "Same block for index #{next_block.index}"
+        else
+          puts "Picking our block for index #{next_block.index}"
+        end
       elsif  next_block.index == last.index + 1
-        puts "Adding relayed block at index " + next_block.index.to_s
+        puts "Adding relayed block at index #{next_block.index}"
 
         next_block.verify!
 
         if next_block.previous_hash != last.hash
-          raise "previous_hash doesn't match with the relayed block at index " + next_block.index.to_s
+          raise "previous_hash for relayed block at index #{next_block.index}"
         end
 
         @blocks << next_block
