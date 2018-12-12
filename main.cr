@@ -9,7 +9,7 @@ port = Random.rand(1000) + 4000
 blockchain = Blockchain.new
 miner = Miner.new blockchain
 chain_storage = ChainStorage.new blockchain
-network = Network.new "http://localhost:#{port}", ARGV.first?
+network = Network.new ARGV.first?
 network_storage = NetworkStorage.new blockchain, network
 
 # Read from file system

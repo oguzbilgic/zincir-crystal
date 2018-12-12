@@ -3,7 +3,7 @@ require "http/client"
 require "./node.cr"
 
 class Network
-  def initialize(@our_ip : String, seed_node_ip = nil)
+  def initialize(seed_node_ip = nil)
     @nodes = [] of Node
     @on_block_callbacks = [] of Block -> Void
 
