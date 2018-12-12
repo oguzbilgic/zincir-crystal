@@ -8,6 +8,11 @@ port = Random.rand(1000) + 4000
 blockchain = Blockchain.new
 network = Network.new blockchain, "http://localhost:#{port}", ARGV.first?
 
+post "/connect" do |env|
+  puts "Node connected: #{env.params.body["id"]}"
+  network.add_node env.params.body["id"], true
+end
+
 post "/relay" do |env|
   block = Block.from_json env.request.body.not_nil!
   blockchain.add_relayed_block block

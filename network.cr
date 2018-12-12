@@ -2,25 +2,28 @@ require "http/client"
 
 class Network
   def initialize(@blockchain : Blockchain, @our_ip : String, node = nil)
-    if node
-      @nodes = [node]
-      add_node(node)
-    else
-      @nodes = [] of String
-    end
+    @nodes = [] of String
+
+    add_node(node) if node
 
     @blockchain.on_solve { |b| broadcast_block b }
   end
 
-  def add_node(node)
-    form = "ip=#{@our_ip}"
-    HTTP::Client.post "#{node}/connect", form: form
-    puts "Connected seed server: #{node}"
+  def add_node(node, incoming = false)
+    @nodes << node
+
+    return if incoming
+
+    HTTP::Client.post "#{node}/connect", form: "ip=#{@our_ip}"
+    puts "Connecting to node: #{node}"
   end
 
   def broadcast_block(block)
     @nodes.each do |node|
       HTTP::Client.post "#{node}/relay", form: block.to_json
+    rescue error
+      # remove the node?
+      next
     end
   end
 
