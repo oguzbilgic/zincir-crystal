@@ -2,7 +2,7 @@
 
 [Zincir](http://github.com/oguzbilgic/zincir) (Simple distributed blockchain experiment) implementation in Crystal
 
-### Install rubygems
+### Install shards
 
 ```bash
 $ shards install
