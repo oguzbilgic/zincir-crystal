@@ -1,28 +1,25 @@
 require "./blockchain.cr"
+require "./chain_storage.cr"
 require "./network.cr"
 require "./web.cr"
 
 port = Random.rand(1000) + 4000
 blockchain = Blockchain.new
 network = Network.new blockchain, "http://localhost:#{port}", ARGV.first?
+chain_storage = ChainStorage.new blockchain
 
-Dir.open(".blocks/").each_child do |filename|
-  file = File.read ".blocks/#{filename}"
-  block = Block.from_json file
-  blockchain.add_relayed_block block
-end
+# Read from file system
+chain_storage.read
 
-blockchain.on_block do |block|
-  Dir.mkdir ".blocks" unless File.exists? ".blocks"
-  File.write ".blocks/#{block.hash}", block.to_json
-end
-
+# Sync with network
 network.download_chain
 
+# Start web server if public
 spawn do
   start_web! port, network, blockchain
 end
 
+# Start miner if mining
 spawn do
   blockchain.work!
 end
