@@ -40,7 +40,7 @@ if !nodes.empty?
 
   loop do
     last_index += 1
-    response = HTTP::Client.get "#{node}/blocks/last_index"
+    response = HTTP::Client.get "#{node}/blocks/#{last_index}"
 
     break if response.status_code != 200
 
