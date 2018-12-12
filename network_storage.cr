@@ -18,9 +18,9 @@ class NetworkStorage
       last_index += 1
       block = @network.download_block last_index
 
-      break unless block
-
-      @blockchain.queue_block block
+      @blockchain.queue_block block if block
+    rescue
+      break
     end
 
     puts "Finished downloading the chain from the network"
