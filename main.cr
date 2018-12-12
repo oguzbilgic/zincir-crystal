@@ -5,10 +5,10 @@ require "./blockchain.cr"
 
 port = Random.rand(1000) + 4000
 blockchain = Blockchain.new
+nodes = ARGV.empty? ? [] of String : [ARGV.first]
 
 post "/relay" do |env|
   block = Block.from_json env.request.body.not_nil!
-  puts "New block received for index " + block.index.to_s
   blockchain.add_relayed_block block
 end
 
@@ -29,25 +29,33 @@ spawn do
 end
 
 # See Connection & Initial Download
-if !ARGV.empty?
+if !nodes.empty?
+  node = nodes.first
+
   form = "ip=http://localhost:#{port}"
-  connect = HTTP::Client.post ARGV.first + "/connect", form: form
-  puts "Connected seed server " + ARGV.first
+  connect = HTTP::Client.post "#{node}/connect", form: form
+  puts "Connected seed server: #{node}"
 
   last_index = blockchain.last.index
 
   loop do
     last_index += 1
-    response = HTTP::Client.get ARGV.first + "/blocks/" + last_index.to_s
+    response = HTTP::Client.get "#{node}/blocks/last_index"
 
     break if response.status_code != 200
 
-    puts "Downloaded block at index: " + last_index.to_s
+    puts "Downloaded block at index: #{last_index}"
     block = Block.from_json response.body
     blockchain.add_relayed_block block
   end
 
   puts "Finished downloading the chain"
+end
+
+blockchain.on_solve do |block|
+  nodes.each do |node|
+    connect = HTTP::Client.post "#{node}/relay", form: block.to_json
+  end
 end
 
 spawn do
