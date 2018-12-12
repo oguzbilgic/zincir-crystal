@@ -35,6 +35,8 @@ class Blockchain
           puts "Picking relayed #{next_block}"
           @blocks = @blocks[0..next_block.index]
           @blocks << next_block
+
+          @callbacks.each { |callback| callback.call(next_block) }
         elsif our_block.hash == next_block.hash
           puts "Same #{next_block}"
         else
@@ -51,8 +53,12 @@ class Blockchain
         end
 
         @blocks << next_block
+
+        @callbacks.each { |callback| callback.call(next_block) }
       else
-        raise "Missing download? #{next_block}"
+        @relayed_blocks << next_block
+        return 
+        # raise "Missing download? #{next_block}"
       end
     end
   end
@@ -65,12 +71,10 @@ class Blockchain
 
       @relayed_blocks << block
       process_relayed
-
-      @callbacks.each { |callback| callback.call(block) }
     end
   end
 
-  def on_solve(&block : Block -> Void)
+  def on_block(&block : Block -> Void)
     @callbacks << block
   end
 end

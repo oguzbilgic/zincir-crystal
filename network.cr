@@ -8,7 +8,7 @@ class Network
 
     add_node_by_ip seed_node_ip if seed_node_ip
 
-    @blockchain.on_solve { |b| broadcast_block b }
+    @blockchain.on_block { |b| broadcast_block b if b.solved }
   end
 
   def add_node_by_socket(socket)
