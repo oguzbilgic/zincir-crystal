@@ -13,8 +13,8 @@ def start_web!(port, network, blockchain)
     blockchain.block_at(index).to_json
   end
 
-  ws "/blocks" do |socket|
-    network.add_node socket
+  ws "/blocks" do |socket, env|
+    network.add_node env.request.host_with_port.not_nil!, socket
   end
 
   puts "Starting web server at port #{port}"
