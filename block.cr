@@ -2,6 +2,8 @@ require "openssl"
 require "json"
 
 class Block
+  property solved = false
+  
   JSON.mapping(
     index: Int32,
     timestamp: Int64,
@@ -12,6 +14,7 @@ class Block
   )
 
   def initialize(@index, @timestamp, @data, @previous_hash)
+    @solved = true
     @nonce, @hash = solve_block
   end
 
