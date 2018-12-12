@@ -17,6 +17,7 @@ class Blockchain
 
   def add_relayed_block(block)
     @relayed_blocks << block
+    process_relayed
   end
 
   def process_relayed
@@ -40,7 +41,8 @@ class Blockchain
           puts "Picking ours #{next_block}"
         end
       elsif  next_block.index == last.index + 1
-        puts "Adding relayed #{next_block}"
+        puts "Solved #{next_block}" if next_block.solved
+        puts "Received #{next_block}" if !next_block.solved
 
         next_block.verify!
 
@@ -57,17 +59,14 @@ class Blockchain
 
   def work!
     loop do
+      block = Block.next self.last, "Transaction Data..."
+
+      next if block.previous_hash != last.hash
+
+      @relayed_blocks << block
       process_relayed
 
-      next_block = Block.next self.last, "Transaction Data..."
-
-      next unless @relayed_blocks.empty?
-
-      @blocks << next_block
-
-      puts "Solved #{next_block}"
-
-      @callbacks.each { |callback| callback.call(next_block) }
+      @callbacks.each { |callback| callback.call(block) }
     end
   end
 
