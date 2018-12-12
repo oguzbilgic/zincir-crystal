@@ -4,6 +4,7 @@ class Blockchain
   def initialize
     @blocks = [Block.first]
     @relayed_blocks = [] of Block
+    @callbacks = [] of Block -> Void
   end
 
   def last
@@ -65,6 +66,12 @@ class Blockchain
       @blocks << next_block
 
       puts "Solved: #{next_block}"
+
+      @callbacks.each { |callback| callback.call(next_block) }
     end
+  end
+
+  def on_solve(&block : Block -> Void)
+    @callbacks << block
   end
 end
