@@ -2,20 +2,30 @@ require "http/client"
 
 class Node
   def initialize(@ip : String)
+    uri = URI.parse "#{@ip}/blocks"
+    @socket = HTTP::WebSocket.new uri
+
+    spawn do
+      @socket.not_nil!.run
+    end
+  end
+
+  def initialize(@ip : String, @socket)
   end
 
   def to_s(io)
-    io << @ip
+    io << @socket
   end
 
-  def connect(our_ip)
-    HTTP::Client.post "#{@ip}/connect", form: "ip=#{our_ip}"
-  rescue
+  def on_block(&block : Block -> Void)
+    @socket.not_nil!.on_message do |msg|
+      b = Block.from_json msg
+      block.call b
+    end
   end
 
   def broadcast_block(block)
-    HTTP::Client.post "#{@ip}/relay", form: block.to_json
-  rescue
+    @socket.not_nil!.send block.to_json
   end
 
   def download_block(index)

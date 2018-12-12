@@ -6,23 +6,36 @@ class Network
   def initialize(@blockchain : Blockchain, @our_ip : String, seed_node_ip = nil)
     @nodes = [] of Node
 
-    add_node seed_node_ip if seed_node_ip
+    add_node_by_ip seed_node_ip if seed_node_ip
 
     @blockchain.on_solve { |b| broadcast_block b }
   end
 
-  def add_node(ip, incoming = false)
+  def add_node_by_socket(socket)
+    node = Node.new "" , socket
+
+    add_node node
+  end
+
+  def add_node_by_ip(ip, incoming = false)
     node = Node.new ip
+
+    add_node node
+  end
+
+  def add_node(node)
+    node.on_block do |block|
+      # puts "Block received #{block}"
+      @blockchain.add_relayed_block block
+    end
+
     @nodes << node
-
-    return if incoming
-
-    node.connect(@our_ip)
-    puts "Connecting to node: #{node}"
+    puts "Connected to node: #{node}"
   end
 
   def broadcast_block(block)
     @nodes.each do |node|
+      # puts "Broadcasting #{block} to #{node}"
       node.broadcast_block block
     rescue
       next
@@ -39,7 +52,6 @@ class Network
       block = @nodes.first.download_block last_index
 
       @blockchain.add_relayed_block block
-      puts "Downloaded #{block}"
     rescue
       break
     end
