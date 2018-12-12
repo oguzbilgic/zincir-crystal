@@ -3,7 +3,7 @@ require "./block.cr"
 class ChainStorage
   def initialize(@blockchain : Blockchain)
     Dir.mkdir ".blocks" unless File.exists? ".blocks"
-    
+
     @blockchain.on_block do |block|
       File.write ".blocks/#{block.hash}", block.to_json
     end
@@ -15,5 +15,7 @@ class ChainStorage
       block = Block.from_json file
       @blockchain.add_relayed_block block
     end
+
+    puts "Finished reading the chain from file system"
   end
 end

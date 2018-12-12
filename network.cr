@@ -3,30 +3,30 @@ require "http/client"
 require "./node.cr"
 
 class Network
-  def initialize(@blockchain : Blockchain, @our_ip : String, seed_node_ip = nil)
+  def initialize(@our_ip : String, seed_node_ip = nil)
     @nodes = [] of Node
+    @on_block_callbacks = [] of Block -> Void
 
-    add_node_by_ip seed_node_ip if seed_node_ip
-
-    @blockchain.on_block { |b| broadcast_block b if b.solved }
+    add_node seed_node_ip if seed_node_ip
   end
 
-  def add_node_by_socket(socket)
+  def add_node(socket : HTTP::WebSocket)
     node = Node.new "" , socket
 
     add_node node
   end
 
-  def add_node_by_ip(ip, incoming = false)
+  def add_node(ip : String)
     node = Node.new ip
 
     add_node node
   end
 
-  def add_node(node)
+  def add_node(node : Node)
     node.on_block do |block|
-      # puts "Block received #{block}"
-      @blockchain.add_relayed_block block
+      @on_block_callbacks.each do |callback|
+        callback.call block
+      end
     end
 
     @nodes << node
@@ -42,20 +42,15 @@ class Network
     end
   end
 
-  def download_chain
+  def download_block(index)
     return if @nodes.empty?
 
-    last_index = @blockchain.last.index
+    random_node = @nodes.sample
 
-    loop do
-      last_index += 1
-      block = @nodes.first.download_block last_index
+    random_node.download_block index
+  end
 
-      @blockchain.add_relayed_block block
-    rescue
-      break
-    end
-
-    puts "Finished downloading the chain"
+  def on_block(&block : Block -> Void)
+    @on_block_callbacks << block
   end
 end

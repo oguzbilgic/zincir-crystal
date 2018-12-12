@@ -14,7 +14,7 @@ def start_web!(port, network, blockchain)
   end
 
   ws "/blocks" do |socket|
-    network.add_node_by_socket socket
+    network.add_node socket
   end
 
   puts "Starting web server at port #{port}"
