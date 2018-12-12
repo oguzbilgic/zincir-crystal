@@ -44,9 +44,9 @@ if !nodes.empty?
 
     break if response.status_code != 200
 
-    puts "Downloaded block at index: #{last_index}"
     block = Block.from_json response.body
     blockchain.add_relayed_block block
+    puts "Downloaded #{block}"
   end
 
   puts "Finished downloading the chain"

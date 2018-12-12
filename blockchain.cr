@@ -31,16 +31,16 @@ class Blockchain
         our_block = block_at next_block.index
 
         if our_block.timestamp > next_block.timestamp
-          puts "Picking relayed block for index #{next_block.index}"
+          puts "Picking relayed #{next_block}"
           @blocks = @blocks[0..next_block.index]
           @blocks << next_block
         elsif our_block.hash == next_block.hash
-          puts "Same block for index #{next_block.index}"
+          puts "Same #{next_block}"
         else
-          puts "Picking our block for index #{next_block.index}"
+          puts "Picking ours #{next_block}"
         end
       elsif  next_block.index == last.index + 1
-        puts "Adding relayed block at index #{next_block.index}"
+        puts "Adding relayed #{next_block}"
 
         next_block.verify!
 
@@ -50,7 +50,7 @@ class Blockchain
 
         @blocks << next_block
       else
-        raise "Missing download? " + next_block.index.to_s
+        raise "Missing download? #{next_block}"
       end
     end
   end
@@ -65,7 +65,7 @@ class Blockchain
 
       @blocks << next_block
 
-      puts "Solved: #{next_block}"
+      puts "Solved #{next_block}"
 
       @callbacks.each { |callback| callback.call(next_block) }
     end
