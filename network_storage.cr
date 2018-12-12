@@ -3,7 +3,7 @@ require "http/client"
 class NetworkStorage
   def initialize(@blockchain : Blockchain, @network : Network)
     @network.on_block do |block|
-      @blockchain.add_relayed_block block
+      @blockchain.queue_block block
     end
 
     @blockchain.on_block do |block|
@@ -20,7 +20,7 @@ class NetworkStorage
 
       break unless block
 
-      @blockchain.add_relayed_block block
+      @blockchain.queue_block block
     end
 
     puts "Finished downloading the chain from the network"

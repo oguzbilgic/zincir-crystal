@@ -3,7 +3,7 @@ require "./block.cr"
 class Blockchain
   def initialize
     @blocks = [Block.first]
-    @relayed_blocks = [] of Block
+    @queued_blocks = [] of Block
     @callbacks = [] of Block -> Void
   end
 
@@ -19,18 +19,18 @@ class Blockchain
     @callbacks << block
   end
 
-  def add_relayed_block(block)
-    @relayed_blocks << block
-    process_relayed
+  def queue_block(block)
+    @queued_blocks << block
+    process_queued
   end
 
-  def process_relayed
+  def process_queued
     loop do
-      return if @relayed_blocks.empty?
+      return if @queued_blocks.empty?
 
-      @relayed_blocks.sort_by! {|b| b.index }
+      @queued_blocks.sort_by! {|b| b.index }
 
-      next_block = @relayed_blocks.shift
+      next_block = @queued_blocks.shift
 
       if next_block.index < last.index + 1
         our_block = block_at next_block.index
@@ -60,7 +60,7 @@ class Blockchain
 
         @callbacks.each { |callback| callback.call(next_block) }
       else
-        @relayed_blocks << next_block
+        @queued_blocks << next_block
         return
         # raise "Missing download? #{next_block}"
       end

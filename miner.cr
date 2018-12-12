@@ -10,7 +10,7 @@ class Miner
 
       next if block.previous_hash != @blockchain.last.hash
 
-      @blockchain.add_relayed_block block
+      @blockchain.queue_block block
     end
   end
 end

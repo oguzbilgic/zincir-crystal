@@ -13,7 +13,7 @@ class ChainStorage
     Dir.open(".blocks/").each_child do |filename|
       file = File.read ".blocks/#{filename}"
       block = Block.from_json file
-      @blockchain.add_relayed_block block
+      @blockchain.queue_block block
     end
 
     puts "Finished reading the chain from file system"
