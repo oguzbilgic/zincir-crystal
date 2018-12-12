@@ -1,28 +1,30 @@
 require "http/client"
 
-class Network
-  def initialize(@blockchain : Blockchain, @our_ip : String, node = nil)
-    @nodes = [] of String
+require "./node.cr"
 
-    add_node(node) if node
+class Network
+  def initialize(@blockchain : Blockchain, @our_ip : String, seed_node_ip = nil)
+    @nodes = [] of Node
+
+    add_node seed_node_ip if seed_node_ip
 
     @blockchain.on_solve { |b| broadcast_block b }
   end
 
-  def add_node(node, incoming = false)
+  def add_node(ip, incoming = false)
+    node = Node.new ip
     @nodes << node
 
     return if incoming
 
-    HTTP::Client.post "#{node}/connect", form: "ip=#{@our_ip}"
+    node.connect(@our_ip)
     puts "Connecting to node: #{node}"
   end
 
   def broadcast_block(block)
     @nodes.each do |node|
-      HTTP::Client.post "#{node}/relay", form: block.to_json
-    rescue error
-      # remove the node?
+      node.broadcast_block block
+    rescue
       next
     end
   end
@@ -34,13 +36,12 @@ class Network
 
     loop do
       last_index += 1
-      response = HTTP::Client.get "#{@nodes.first}/blocks/#{last_index}"
+      block = @nodes.first.download_block last_index
 
-      break if response.status_code != 200
-
-      block = Block.from_json response.body
       @blockchain.add_relayed_block block
       puts "Downloaded #{block}"
+    rescue
+      break
     end
 
     puts "Finished downloading the chain"
