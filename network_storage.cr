@@ -18,7 +18,11 @@ class NetworkStorage
       last_index += 1
       block = @network.download_block last_index
 
-      @blockchain.queue_block block if block
+      if block
+        @blockchain.queue_block block
+      else
+        break
+      end
     rescue
       break
     end
