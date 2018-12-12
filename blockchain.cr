@@ -15,6 +15,10 @@ class Blockchain
     @blocks[index]
   end
 
+  def on_block(&block : Block -> Void)
+    @callbacks << block
+  end
+
   def add_relayed_block(block)
     @relayed_blocks << block
     process_relayed
@@ -57,24 +61,9 @@ class Blockchain
         @callbacks.each { |callback| callback.call(next_block) }
       else
         @relayed_blocks << next_block
-        return 
+        return
         # raise "Missing download? #{next_block}"
       end
     end
-  end
-
-  def work!
-    loop do
-      block = Block.next self.last, "Transaction Data..."
-
-      next if block.previous_hash != last.hash
-
-      @relayed_blocks << block
-      process_relayed
-    end
-  end
-
-  def on_block(&block : Block -> Void)
-    @callbacks << block
   end
 end
