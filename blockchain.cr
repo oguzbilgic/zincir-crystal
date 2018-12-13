@@ -47,14 +47,19 @@ class Blockchain
           puts "Picking ours #{next_block}"
         end
       elsif  next_block.index == last.index + 1
-        puts "Solved #{next_block}" if next_block.solved
-        puts "Received #{next_block}" if !next_block.solved
-
         next_block.verify!
 
         if next_block.previous_hash != last.hash
           raise "previous_hash for relayed block at index #{next_block.index}"
         end
+
+        if next_block.timestamp <= last.timestamp
+          next
+          puts "Block time is wrong #{next_block.index}"
+        end
+
+        puts "Solved #{next_block}" if next_block.solved
+        puts "Received #{next_block}" if !next_block.solved
 
         @blocks << next_block
 

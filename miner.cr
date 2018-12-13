@@ -10,7 +10,11 @@ class Miner
 
       next if block.previous_hash != @blockchain.last.hash
 
+      next if block.timestamp <= @blockchain.last.timestamp
+
       @blockchain.queue_block block
+      
+      sleep 1
     end
   end
 end
