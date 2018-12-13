@@ -36,11 +36,16 @@ class Block
     raise "invalid" if @hash != calculate_hash @nonce
   end
 
-  def solve_block(difficulty = "00000", nonce = 0)
+  def self.difficult_enough?(hash, difficulty)
+    hash_difficulty = hash[0..difficulty.size].to_i64(16)
+    hash_difficulty <= (difficulty+ "f").to_i64(16)
+  end
+
+  def solve_block(difficulty, nonce = 0)
     loop do
       hash = calculate_hash nonce
 
-      return {nonce, hash} if hash.starts_with? difficulty
+      return {nonce, hash} if Block.difficult_enough? hash, difficulty
 
       nonce += 1
       Fiber.yield
