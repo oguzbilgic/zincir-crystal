@@ -8,8 +8,9 @@ class Miner
     loop do
       next_difficulty = @blockchain.next_difficulty
       puts "Difficulty #{@blockchain.last.difficulty} -> #{next_difficulty}" if next_difficulty != @blockchain.last.difficulty
-      
-      block = Block.next @blockchain.last, next_difficulty, "Transaction Data..."
+
+      data = "Transaction Data... #{Random.rand(5)}"
+      block = Block.next @blockchain.last, next_difficulty, data
 
       next if block.previous_hash != @blockchain.last.hash
 
