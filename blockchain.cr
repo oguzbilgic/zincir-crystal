@@ -1,8 +1,5 @@
 require "./block.cr"
 
-BLOCK_DURATION = 10.0
-UPDATE_FREQUENCY = 10
-
 # TODO clean up
 def flip_hex(hex)
   new_hex = ""
@@ -40,7 +37,24 @@ def add_decimal(hex, decimal)
   flipped_sum
 end
 
+def calculate_difficulty(difficulty, duration, desired_duration)
+  ratio = desired_duration / duration
+
+  if ratio > 2
+    add_decimal difficulty, 16
+  elsif ratio > 1
+    add_decimal difficulty, ((16 * ratio) - 16).to_i
+  elsif ratio < 1
+    add_decimal difficulty, (-16 * (1-ratio)).to_i
+  else
+    difficulty
+  end
+end
+
 class Blockchain
+  BLOCK_DURATION = 10.0
+  UPDATE_FREQUENCY = 10
+
   def initialize
     @blocks = [Block.first]
     @queued_blocks = [] of Block
@@ -58,21 +72,14 @@ class Blockchain
   # TODO clean up
   def next_difficulty
     return last.difficulty if last.index == (UPDATE_FREQUENCY - 1)
+
     return last.difficulty if (last.index+1) % UPDATE_FREQUENCY > 0
 
     first_block = block_at last.index - 9
     duration =  last.timestamp - first_block.timestamp
-    ratio = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1)) / duration
+    desired_duration = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1))
 
-    if ratio > 2
-      add_decimal last.difficulty, 16
-    elsif ratio > 1
-      add_decimal last.difficulty, ((16 * ratio) - 16).to_i
-    elsif ratio < 1
-      add_decimal last.difficulty, (-16 * (1-ratio)).to_i
-    else
-      last.difficulty
-    end
+    calculate_difficulty last.difficulty, duration, desired_duration
   end
 
   def on_block(&block : Block -> Void)
