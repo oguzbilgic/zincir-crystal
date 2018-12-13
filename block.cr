@@ -3,27 +3,29 @@ require "json"
 
 class Block
   property solved = false
-  
+
   JSON.mapping(
     index: Int32,
     timestamp: Int64,
     data: String,
     previous_hash: String,
+    difficulty: String,
     nonce: Int32,
-    hash: String
+    hash: String,
   )
 
-  def initialize(@index, @timestamp, @data, @previous_hash)
+  def initialize(@index, @timestamp, @data, @previous_hash, @difficulty)
     @solved = true
-    @nonce, @hash = solve_block
+    # verify if the difficulty is valid
+    @nonce, @hash = solve_block @difficulty
   end
 
   def self.first
-    Block.new 0, 0_i64, "Genesis", "0"
+    Block.new 0, 0_i64, "Genesis", "0", "0"
   end
 
-  def self.next(previous, data)
-    Block.new previous.index + 1, Time.now.to_unix, data, previous.hash
+  def self.next(previous, difficulty, data)
+    Block.new previous.index + 1, Time.now.to_unix, data, previous.hash, difficulty
   end
 
   def to_s(io)
