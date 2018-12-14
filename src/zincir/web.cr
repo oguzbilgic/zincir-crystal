@@ -1,5 +1,7 @@
 module Zincir
-  def start_web!(port, network, blockchain)
+  def start_web!(network, blockchain)
+    port = Random.rand(1000) + 4000
+
     get "/blocks" do
       blockchain.last.to_json
     end
