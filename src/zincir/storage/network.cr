@@ -18,11 +18,7 @@ module Zincir
           last_index += 1
           block = network.download_block last_index
 
-          if block
-            blockchain.queue_block block
-          else
-            break
-          end
+          blockchain.queue_block block
         rescue
           break
         end

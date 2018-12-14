@@ -14,9 +14,7 @@ module Zincir
     end
 
     def add_node(ip : String)
-      node = Node.new ip
-
-      add_node node
+      add_node Node.new ip
     end
 
     def add_node(node : Node)
@@ -32,7 +30,6 @@ module Zincir
 
     def broadcast_block(block)
       @nodes.each do |node|
-        # puts "Broadcasting #{block} to #{node}"
         node.broadcast_block block
       rescue
         next
@@ -40,11 +37,7 @@ module Zincir
     end
 
     def download_block(index)
-      return if @nodes.empty?
-
-      random_node = @nodes.sample
-
-      random_node.download_block index
+      @nodes.sample.download_block index
     end
 
     def on_block(&block : Block -> Void)

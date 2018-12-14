@@ -1,8 +1,7 @@
 module Zincir
   class Node
     def initialize(@ip)
-      uri = URI.parse "#{@ip}/blocks"
-      @socket = HTTP::WebSocket.new uri
+      @socket = HTTP::WebSocket.new URI.parse "#{@ip}/blocks"
 
       spawn @socket.run
     end
@@ -16,8 +15,7 @@ module Zincir
 
     def on_block(&block : Block -> Void)
       @socket.on_message do |msg|
-        b = Block.from_json msg
-        block.call b
+        block.call Block.from_json msg
       end
     end
 

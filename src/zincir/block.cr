@@ -3,13 +3,13 @@ module Zincir
     property? mined_by_us = false
 
     JSON.mapping(
-    index: Int32,
-    timestamp: Int64,
-    data: String,
-    previous_hash: String,
-    difficulty: String,
-    nonce: Int32,
-    hash: String,
+      index: Int32,
+      timestamp: Int64,
+      data: String,
+      previous_hash: String,
+      difficulty: String,
+      nonce: Int32,
+      hash: String,
     )
 
     def initialize(@index, @timestamp, @data, @previous_hash, @difficulty)
