@@ -31,7 +31,7 @@ module Zincir
 
       return last.difficulty if next_index % UPDATE_FREQUENCY > 0
 
-      first_block = block_at last.index - 9
+      first_block = block_at last.index - UPDATE_FREQUENCY + 1
       duration =  last.timestamp - first_block.timestamp
       desired_duration = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1))
 
@@ -50,7 +50,9 @@ module Zincir
     end
 
     private def add_block(block)
-      block.verify!
+      unless block.valid?
+        raise "Invalid block #{block.index}"
+      end
 
       if block.previous_hash != last.hash
         raise "Hash mismatch for block at index #{block.index}"

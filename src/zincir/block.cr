@@ -30,8 +30,8 @@ module Zincir
       io << "<#{index}-#{@hash[0..8]}..#{@hash[-3..-1]}> #{@timestamp}"
     end
 
-    def verify!
-      raise "invalid" if @hash != calculate_hash @nonce
+    def valid?
+      @hash == calculate_hash @nonce
     end
 
     def self.difficult_enough?(hash, difficulty)
