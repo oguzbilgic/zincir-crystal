@@ -21,11 +21,15 @@ module Zincir
       @blocks[index]
     end
 
+    def next_index
+      last.index + 1
+    end
+
     # TODO clean up
     def next_difficulty
       return last.difficulty if last.index == (UPDATE_FREQUENCY - 1)
 
-      return last.difficulty if (last.index+1) % UPDATE_FREQUENCY > 0
+      return last.difficulty if next_index % UPDATE_FREQUENCY > 0
 
       first_block = block_at last.index - 9
       duration =  last.timestamp - first_block.timestamp
@@ -41,14 +45,15 @@ module Zincir
 
     def queue_block(block)
       @queued_blocks << block
+
       process_queued
     end
 
-    def add_block(block)
+    private def add_block(block)
       block.verify!
 
       if block.previous_hash != last.hash
-        raise "previous_hash for relayed block at index #{block.index}"
+        raise "Hash mismatch for block at index #{block.index}"
       end
 
       if block.difficulty != next_difficulty
@@ -70,35 +75,29 @@ module Zincir
       @callbacks.each { |callback| callback.call block }
     end
 
-    def process_queued
+    private def process_queued
       loop do
         return if @queued_blocks.empty?
 
         @queued_blocks.sort_by! {|b| b.index }
 
+        return if next_index < @queued_blocks.first.index
+
         block = @queued_blocks.shift
 
-        if block.index < last.index + 1
-          # if block has a lower index
+        # if block has a lower index
+        if next_index > block.index
           our_block = block_at block.index
 
-          if our_block.timestamp > block.timestamp
-            puts "Picking relayed #{block}"
-            @blocks = @blocks[0..block.index]
-            add_block block
-          elsif our_block.hash == block.hash
-            puts "Same #{block}"
-          else
-            puts "Picking ours #{block}"
-          end
-        elsif block.index == last.index + 1
-          # if block has the current index
-          add_block block
-        else
-          # if block has higher index
-          @queued_blocks << block
-          return
+          return if our_block.hash == block.hash
+
+          return if our_block.timestamp <= block.timestamp
+
+          puts "Reseting chain with #{block}"
+          @blocks = @blocks[0..block.index]
         end
+
+        add_block block
       end
     end
   end
