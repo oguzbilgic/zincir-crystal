@@ -1,6 +1,6 @@
 require "http/client"
 
-class NetworkStorage
+class Zincir::NetworkStorage
   def initialize(@blockchain : Blockchain, @network : Network)
     @network.on_block do |block|
       @blockchain.queue_block block

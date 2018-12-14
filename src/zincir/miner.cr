@@ -1,6 +1,4 @@
-require "./block.cr"
-
-class Miner
+class Zincir::Miner
   def initialize(@blockchain : Blockchain)
   end
 

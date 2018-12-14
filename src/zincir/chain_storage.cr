@@ -1,6 +1,4 @@
-require "./block.cr"
-
-class ChainStorage
+class Zincir::ChainStorage
   def initialize(@blockchain : Blockchain)
     Dir.mkdir ".blocks" unless File.exists? ".blocks"
 

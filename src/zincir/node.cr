@@ -1,6 +1,6 @@
 require "http/client"
 
-class Node
+class Zincir::Node
   def initialize(@ip : String)
     uri = URI.parse "#{@ip}/blocks"
     @socket = HTTP::WebSocket.new uri

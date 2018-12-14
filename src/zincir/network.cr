@@ -1,8 +1,6 @@
 require "http/client"
 
-require "./node.cr"
-
-class Network
+class Zincir::Network
   def initialize(seed_node_ip = nil)
     @nodes = [] of Node
     @on_block_callbacks = [] of Block -> Void

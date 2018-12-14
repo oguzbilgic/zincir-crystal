@@ -1,57 +1,58 @@
-require "./block.cr"
+module Zincir
+  # TODO figure out how to use functions inside modules withouth the module name
+  extend self
 
-# TODO clean up
-def flip_hex(hex)
-  new_hex = ""
-  hex.each_char do |char|
-    new_hex += ('f'.to_i(16) - char.to_i(16)).to_s(16)
+  # TODO clean up
+  def flip_hex(hex)
+    new_hex = ""
+    hex.each_char do |char|
+      new_hex += ('f'.to_i(16) - char.to_i(16)).to_s(16)
+    end
+    new_hex
   end
-  new_hex
+
+  # TODO clean up
+  def multiply_hex(hex, decimal)
+    # puts hex
+    flipped_hex = flip_hex hex
+    # puts flipped_hex
+    decimal_hex = flipped_hex.to_i64(16)
+    # puts decimal_hex
+    sum = decimal_hex * decimal
+    # puts sum
+
+    x = 0
+    result = 0
+    loop do
+      result = 16 ** (x+1)
+      break if result > sum
+      # puts x
+      x += 1
+    end
+    # puts x
+
+    additional = ((sum * 1.6) / result).to_i.to_s(16)
+    # puts additional
+
+    ("0" * x) + additional
+  end
+
+  # TODO clean up
+  def calculate_difficulty(difficulty, duration, desired_duration)
+    ratio = desired_duration / duration
+    puts ratio
+
+    if ratio > 1
+      multiply_hex difficulty, ratio
+    elsif ratio < 1
+      multiply_hex difficulty, 1/ratio
+    else
+      difficulty
+    end
+  end
 end
 
-# TODO clean up
-def add_decimal(hex, decimal)
-  # puts hex
-  flipped_hex = flip_hex hex
-  # puts flipped_hex
-  decimal_hex = flipped_hex.to_i64(16)
-  # puts decimal_hex
-  sum = decimal_hex + decimal
-  # puts sum
-  hex_sum = sum.to_s(16)
-  # puts hex_sum
-  flipped_sum = flip_hex hex_sum
-  # puts flipped_sum
-
-  if flipped_sum.size > hex.size
-    # puts "OVERFLOW #{decimal} #{16-decimal}"
-    return add_decimal hex+"0", decimal-16
-  elsif flipped_sum.size < hex.size
-    # remove fs
-  end
-
-  if flipped_sum.to_i64(16) != 0 && flipped_sum.ends_with? "0"
-    return "0" + flipped_sum.rchop '0'
-  end
-
-  flipped_sum
-end
-
-def calculate_difficulty(difficulty, duration, desired_duration)
-  ratio = desired_duration / duration
-
-  if ratio > 2
-    add_decimal difficulty, 16
-  elsif ratio > 1
-    add_decimal difficulty, ((16 * ratio) - 16).to_i
-  elsif ratio < 1
-    add_decimal difficulty, (-16 * (1-ratio)).to_i
-  else
-    difficulty
-  end
-end
-
-class Blockchain
+class Zincir::Blockchain
   BLOCK_DURATION = 10.0
   UPDATE_FREQUENCY = 10
 
@@ -79,7 +80,8 @@ class Blockchain
     duration =  last.timestamp - first_block.timestamp
     desired_duration = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1))
 
-    calculate_difficulty last.difficulty, duration, desired_duration
+    # TODO figure out how to use functions inside modules withouth the module name
+    Zincir.calculate_difficulty last.difficulty, duration, desired_duration
   end
 
   def on_block(&block : Block -> Void)

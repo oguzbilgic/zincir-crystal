@@ -1,7 +1,7 @@
 require "openssl"
 require "json"
 
-class Block
+class Zincir::Block
   property solved = false
 
   JSON.mapping(
@@ -29,7 +29,7 @@ class Block
   end
 
   def to_s(io)
-    io << "<#{index}-#{@hash[0..6]}..#{@hash[-5..-1]}>"
+    io << "<#{index}-#{@hash[0..8]}..#{@hash[-3..-1]}> #{@timestamp}"
   end
 
   def verify!

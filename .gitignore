@@ -1,3 +1,6 @@
-bin/
-lib/
-.blocks/
+/docs/
+/lib/
+/bin/
+/.shards/
+*.dwarf
+/.blocks/

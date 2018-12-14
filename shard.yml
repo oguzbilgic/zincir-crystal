@@ -8,6 +8,10 @@ authors:
 description: |
   Simple distributed blockchain experiment written in Crystal
 
+targets:
+  zincir:
+    main: src/zincir.cr
+
 dependencies:
   kemal:
     github:  kemalcr/kemal
