@@ -10,25 +10,19 @@ module Zincir
   VERSION = "0.1.0"
 
   blockchain = Blockchain.new
+  network = Network.new ARGV.first?
 
   # Read from file system
-  file_storage = Storage::File.new blockchain
-  file_storage.load_and_start
+  Storage::File.load_and_sync blockchain
 
   # Sync with network
-  network = Network.new ARGV.first?
-  network_storage = Storage::Network.new blockchain, network
-  network_storage.load_and_start
+  Storage::Network.load_and_sync blockchain, network
 
   # Start web server if public
-  spawn do
-    Web.start! network, blockchain
-  end
+  spawn Web.start! network, blockchain
 
   # Start miner if mining
-  spawn do
-    Miner.start! blockchain
-  end
+  spawn Miner.start! blockchain
 
   sleep
 end
