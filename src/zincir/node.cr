@@ -1,12 +1,10 @@
 module Zincir
   class Node
-    def initialize(@ip : String)
+    def initialize(@ip)
       uri = URI.parse "#{@ip}/blocks"
       @socket = HTTP::WebSocket.new uri
 
-      spawn do
-        @socket.not_nil!.run
-      end
+      spawn @socket.run
     end
 
     def initialize(@ip : String, @socket)
@@ -17,14 +15,14 @@ module Zincir
     end
 
     def on_block(&block : Block -> Void)
-      @socket.not_nil!.on_message do |msg|
+      @socket.on_message do |msg|
         b = Block.from_json msg
         block.call b
       end
     end
 
     def broadcast_block(block)
-      @socket.not_nil!.send block.to_json
+      @socket.send block.to_json
     end
 
     def download_block(index)

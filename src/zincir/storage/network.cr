@@ -3,7 +3,7 @@ module Zincir
     module Network
       extend self
 
-      def load_and_sync(blockchain : Blockchain, network : Zincir::Network)
+      def load_and_sync(blockchain, network)
         network.on_block do |block|
           blockchain.queue_block block
         end
