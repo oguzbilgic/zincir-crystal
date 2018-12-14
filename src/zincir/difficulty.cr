@@ -18,17 +18,29 @@ module Zincir
         return multiply_hex hex[1..-1], still
       end
 
-      last_num = hex[-1].to_i(16)
-      if last_num == 0
-          diff = 16.0 / decimal
-          hex + diff.round(0).to_i.to_s(16)
-      elsif last_num >= decimal.to_i
-        diff = last_num.to_f / decimal
-        hex[0..-2] + diff.round(0).to_i.to_s(16)
-      else
-        still = decimal / last_num.to_f
-        multiply_hex hex[0..-2] + '0', still.to_f
+      if hex.ends_with? '0'
+        diff = 16 / decimal
+        return hex + diff.to_i.to_s(16)
       end
+
+      count = hex.count('0')
+      # f_added = hex + "0"
+      size = hex.to_i(16).to_s.size
+      int_hex = hex.to_i(16)
+      int_hex = hex.to_i(16) * 16 if size == 2
+      int_hex = hex.to_i(16) * 16 * 16 if size == 1
+      diff = int_hex.not_nil! / decimal
+
+      if hex[-1].to_i(16) < decimal
+        result = ("0" * count) + "0" + diff.to_i.to_s(16)
+      else
+        result = ("0" * count) + diff.to_i.to_s(16)
+      end
+
+      while result.ends_with? '0'
+        result = result[0..-2]
+      end
+      result
     end
 
     # TODO figure out a sound way to calculate difficulty
