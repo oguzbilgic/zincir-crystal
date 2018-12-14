@@ -1,5 +1,3 @@
-require "http/client"
-
 class Zincir::Network
   def initialize(seed_node_ip = nil)
     @nodes = [] of Node

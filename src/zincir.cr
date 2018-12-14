@@ -1,3 +1,8 @@
+require "openssl"
+require "json"
+require "http/client"
+require "kemal"
+
 require "./zincir/*"
 require "./zincir/storage/*"
 

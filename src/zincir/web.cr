@@ -1,5 +1,3 @@
-require "kemal"
-
 module Zincir
   def start_web!(port, network, blockchain)
     get "/blocks" do

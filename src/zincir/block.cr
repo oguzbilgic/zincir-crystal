@@ -1,6 +1,3 @@
-require "openssl"
-require "json"
-
 class Zincir::Block
   property solved = false
 

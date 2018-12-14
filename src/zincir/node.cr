@@ -1,5 +1,3 @@
-require "http/client"
-
 class Zincir::Node
   def initialize(@ip : String)
     uri = URI.parse "#{@ip}/blocks"
