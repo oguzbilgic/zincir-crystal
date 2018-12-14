@@ -1,7 +1,7 @@
 module Zincir
   module Storage
     class File < Base
-      def initialize(@blockchain : Zincir::Blockchain)
+      def initialize(@blockchain : Blockchain)
         Dir.mkdir ".blocks" unless ::File.exists? ".blocks"
 
         @blockchain.on_block do |block|

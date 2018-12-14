@@ -1,7 +1,7 @@
 module Zincir
   module Storage
     class Network < Base
-      def initialize(@blockchain : Zincir::Blockchain, @network : Zincir::Network)
+      def initialize(@blockchain : Blockchain, @network : Zincir::Network)
         @network.on_block do |block|
           @blockchain.queue_block block
         end
