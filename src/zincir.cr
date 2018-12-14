@@ -1,4 +1,5 @@
 require "./zincir/*"
+require "./zincir/storage/*"
 
 module Zincir
   VERSION = "0.1.0"
@@ -6,15 +7,15 @@ module Zincir
   port = Random.rand(1000) + 4000
   blockchain = Blockchain.new
   miner = Miner.new blockchain
-  chain_storage = ChainStorage.new blockchain
   network = Network.new ARGV.first?
-  network_storage = NetworkStorage.new blockchain, network
+  file_storage = Storage::File.new blockchain
+  network_storage = Storage::Network.new blockchain, network
 
   # Read from file system
-  chain_storage.read
+  file_storage.load_and_start
 
   # Sync with network
-  network_storage.download_chain
+  network_storage.load_and_start
 
   # Start web server if public
   spawn do
