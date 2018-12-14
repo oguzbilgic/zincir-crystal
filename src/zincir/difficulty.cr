@@ -38,7 +38,7 @@ module Zincir
     # TODO clean up
     def calculate_difficulty(difficulty, duration, desired_duration)
       ratio = desired_duration / duration
-      puts ratio
+      # puts ratio
 
       if ratio > 1
         multiply_hex difficulty, ratio

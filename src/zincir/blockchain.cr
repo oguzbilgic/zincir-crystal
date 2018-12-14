@@ -44,54 +44,60 @@ module Zincir
       process_queued
     end
 
+    def add_block(block)
+      block.verify!
+
+      if block.previous_hash != last.hash
+        raise "previous_hash for relayed block at index #{block.index}"
+      end
+
+      if block.difficulty != next_difficulty
+        raise "Difficulty mismatch #{block.difficulty} #{next_difficulty}"
+      end
+
+      if block.timestamp <= last.timestamp
+        raise "Block time is wrong #{block.index}"
+      end
+
+      if last.difficulty != block.difficulty
+        puts "Difficulty #{last.difficulty} -> #{block.difficulty}"
+      end
+
+      puts "#{block.mined_by_us? ? "Mined" : "Added"} #{block}"
+
+      @blocks << block
+
+      @callbacks.each { |callback| callback.call block }
+    end
+
     def process_queued
       loop do
         return if @queued_blocks.empty?
 
         @queued_blocks.sort_by! {|b| b.index }
 
-        next_block = @queued_blocks.shift
+        block = @queued_blocks.shift
 
-        if next_block.index < last.index + 1
-          our_block = block_at next_block.index
+        if block.index < last.index + 1
+          # if block has a lower index
+          our_block = block_at block.index
 
-          if our_block.timestamp > next_block.timestamp
-            puts "Picking relayed #{next_block}"
-            @blocks = @blocks[0..next_block.index]
-            @blocks << next_block
-
-            @callbacks.each { |callback| callback.call(next_block) }
-          elsif our_block.hash == next_block.hash
-            puts "Same #{next_block}"
+          if our_block.timestamp > block.timestamp
+            puts "Picking relayed #{block}"
+            @blocks = @blocks[0..block.index]
+            add_block block
+          elsif our_block.hash == block.hash
+            puts "Same #{block}"
           else
-            puts "Picking ours #{next_block}"
+            puts "Picking ours #{block}"
           end
-        elsif  next_block.index == last.index + 1
-          next_block.verify!
-
-          if next_block.previous_hash != last.hash
-            raise "previous_hash for relayed block at index #{next_block.index}"
-          end
-
-          if next_block.timestamp <= last.timestamp
-            next
-            puts "Block time is wrong #{next_block.index}"
-          end
-
-          if next_block.difficulty != next_difficulty
-            raise "Difficulty mismatch #{next_block.difficulty} #{next_difficulty}"
-          end
-
-          puts "Solved #{next_block}" if next_block.mined_by_us?
-          puts "Received #{next_block}" if !next_block.mined_by_us?
-
-          @blocks << next_block
-
-          @callbacks.each { |callback| callback.call(next_block) }
+        elsif block.index == last.index + 1
+          # if block has the current index
+          add_block block
         else
-          @queued_blocks << next_block
+          # if block has higher index
+          @queued_blocks << block
           return
-          # raise "Missing download? #{next_block}"
         end
       end
     end
