@@ -2,8 +2,6 @@ require "./difficulty"
 
 module Zincir
   class Blockchain
-    include Difficulty
-
     BLOCK_DURATION = 10.0
     UPDATE_FREQUENCY = 10
 
@@ -36,7 +34,7 @@ module Zincir
       desired_duration = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1))
 
       # TODO figure out how to use functions inside modules withouth the module name
-      calculate_difficulty last.difficulty, duration, desired_duration
+      Difficulty.calculate_difficulty last.difficulty, duration, desired_duration
     end
 
     def on_block(&block : Block -> Void)

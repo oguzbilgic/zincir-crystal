@@ -1,5 +1,12 @@
 module Zincir
   module Difficulty
+    extend self
+    
+    def satisfies?(hash, difficulty)
+      hash_difficulty = hash[0..difficulty.size].to_i64(16)
+      hash_difficulty <= (difficulty+ "f").to_i64(16)
+    end
+
     # TODO clean up
     def flip_hex(hex)
       new_hex = ""

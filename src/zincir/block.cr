@@ -1,3 +1,5 @@
+require "./difficulty"
+
 module Zincir
   class Block
     property? mined_by_us = false
@@ -34,16 +36,11 @@ module Zincir
       @hash == calculate_hash @nonce
     end
 
-    def self.difficult_enough?(hash, difficulty)
-      hash_difficulty = hash[0..difficulty.size].to_i64(16)
-      hash_difficulty <= (difficulty+ "f").to_i64(16)
-    end
-
     def solve_block(difficulty, nonce = 0)
       loop do
         hash = calculate_hash nonce
 
-        return {nonce, hash} if Block.difficult_enough? hash, difficulty
+        return {nonce, hash} if Difficulty.satisfies? hash, difficulty
 
         nonce += 1
         Fiber.yield
