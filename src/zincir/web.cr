@@ -1,8 +1,8 @@
 module Zincir
   module Web
     extend self
-    
-    def start_web!(network, blockchain)
+
+    def start!(network, blockchain)
       get "/blocks" do
         blockchain.last.to_json
       end

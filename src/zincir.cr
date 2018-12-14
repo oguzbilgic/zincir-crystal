@@ -22,13 +22,12 @@ module Zincir
 
   # Start web server if public
   spawn do
-    Web.start_web! network, blockchain
+    Web.start! network, blockchain
   end
 
   # Start miner if mining
   spawn do
-    miner = Miner.new blockchain
-    miner.run!
+    Miner.start! blockchain
   end
 
   sleep
