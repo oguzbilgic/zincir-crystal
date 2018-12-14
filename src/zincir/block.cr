@@ -1,5 +1,5 @@
 class Zincir::Block
-  property solved = false
+  property? mined_by_us = false
 
   JSON.mapping(
     index: Int32,
@@ -12,7 +12,7 @@ class Zincir::Block
   )
 
   def initialize(@index, @timestamp, @data, @previous_hash, @difficulty)
-    @solved = true
+    @mined_by_us = true
     # verify if the difficulty is valid
     @nonce, @hash = solve_block @difficulty
   end

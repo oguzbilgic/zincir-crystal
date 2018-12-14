@@ -82,8 +82,8 @@ module Zincir
             raise "Difficulty mismatch #{next_block.difficulty} #{next_difficulty}"
           end
 
-          puts "Solved #{next_block}" if next_block.solved
-          puts "Received #{next_block}" if !next_block.solved
+          puts "Solved #{next_block}" if next_block.mined_by_us?
+          puts "Received #{next_block}" if !next_block.mined_by_us?
 
           @blocks << next_block
 

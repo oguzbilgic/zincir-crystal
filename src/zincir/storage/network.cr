@@ -7,7 +7,7 @@ module Zincir
         end
 
         @blockchain.on_block do |block|
-          @network.broadcast_block block if block.solved
+          @network.broadcast_block block if block.mined_by_us?
         end
       end
 
