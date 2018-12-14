@@ -1,59 +1,41 @@
 module Zincir
   module Difficulty
     extend self
-    
+
     def satisfies?(hash, difficulty)
       hash_difficulty = hash[0..difficulty.size].to_i64(16)
       hash_difficulty <= (difficulty+ "f").to_i64(16)
     end
 
-    # TODO clean up
-    def flip_hex(hex)
-      new_hex = ""
-      hex.each_char do |char|
-        new_hex += ('f'.to_i(16) - char.to_i(16)).to_s(16)
-      end
-      new_hex
-    end
-
-    # TODO clean up
+    # TODO
     def multiply_hex(hex, decimal)
-      # puts hex
-      flipped_hex = flip_hex hex
-      # puts flipped_hex
-      decimal_hex = flipped_hex.to_i64(16)
-      # puts decimal_hex
-      sum = decimal_hex * decimal
-      # puts sum
-
-      x = 0
-      result = 0
-      loop do
-        result = 16 ** (x+1)
-        break if result > sum
-        # puts x
-        x += 1
+      if decimal >= 16
+        return "0" + hex
       end
-      # puts x
 
-      additional = ((sum * 1.6) / result).to_i.to_s(16)
-      # puts additional
+      if decimal < 1
+        still = decimal * 16
+        return multiply_hex hex[1..-1], still
+      end
 
-      ("0" * x) + additional
+      last_num = hex[-1].to_i(16)
+      if last_num == 0
+          diff = 16.0 / decimal
+          hex + diff.round(0).to_i.to_s(16)
+      elsif last_num >= decimal.to_i
+        diff = last_num.to_f / decimal
+        hex[0..-2] + diff.round(0).to_i.to_s(16)
+      else
+        still = decimal / last_num.to_f
+        multiply_hex hex[0..-2] + '0', still.to_f
+      end
     end
 
-    # TODO clean up
+    # TODO figure out a sound way to calculate difficulty
     def calculate_difficulty(difficulty, duration, desired_duration)
       ratio = desired_duration / duration
-      # puts ratio
 
-      if ratio > 1
-        multiply_hex difficulty, ratio
-      elsif ratio < 1
-        multiply_hex difficulty, 1/ratio
-      else
-        difficulty
-      end
+      multiply_hex difficulty, ratio
     end
   end
 end
