@@ -10,7 +10,7 @@ module Zincir
       timestamp: Int64,
       data: String,
       previous_hash: String,
-      difficulty: String,
+      difficulty: Int64,
       nonce: Int32,
       hash: String,
     )
@@ -22,7 +22,7 @@ module Zincir
     end
 
     def self.first
-      Block.new 0, 0_i64, "Genesis", "0", "0"
+      Block.new 0, 0_i64, "Genesis", "0", 10_i64
     end
 
     def self.next(previous, difficulty, data)

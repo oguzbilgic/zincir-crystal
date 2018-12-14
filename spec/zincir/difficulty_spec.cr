@@ -1,7 +1,48 @@
 require "./../spec_helper"
 
 describe Zincir::Difficulty do
-  describe "#multiply_hex" do
+  describe ".hash_to_bits" do
+    cases = [
+      {"0", [0, 0, 0, 0]},
+      {"f", [1, 1, 1, 1]},
+      {"0f", [0, 0, 0, 0, 1, 1, 1, 1]},
+    ]
+
+    cases.each do |c|
+      Zincir::Difficulty.hash_to_bits(c[0]).should eq(c[1])
+    end
+  end
+
+  describe ".satisfies?" do
+    cases = [
+      {"0", 4, true},
+      {"f", 1, false},
+      {"0f", 4, true},
+    ]
+
+    cases.each do |c|
+      Zincir::Difficulty.satisfies?(c[0], c[1]).should eq(c[2])
+    end
+  end
+
+  describe ".hex_to_dec" do
+    cases = [
+      {"0", 16.0},
+      {"00", 256.0},
+      {"007", 512.0},
+      {"0077", 1024.0},
+      {"1", 8.0},
+      # {"2", 5.33},
+      {"3", 4},
+      {"000034d", 958698.0571428571},
+    ]
+
+    cases.each do |c|
+      Zincir::Difficulty.hex_to_dec(c[0]).should eq(c[1])
+    end
+  end
+
+  describe ".multiply_hex" do
     it "correctly multiplies hex string with the decimal" do
       Zincir::Difficulty.multiply_hex("000", 2).should eq("0008")
       Zincir::Difficulty.multiply_hex("000", 4).should eq("0004")
