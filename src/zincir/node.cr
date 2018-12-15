@@ -3,7 +3,7 @@ module Zincir
     include Emitter(Block -> Void)
 
     def initialize(@ip)
-      @socket = HTTP::WebSocket.new URI.parse "#{@ip}/blocks"
+      @socket = HTTP::WebSocket.new "ws://#{ip}/blocks"
 
       listen
       spawn @socket.run
@@ -28,7 +28,7 @@ module Zincir
     end
 
     def download_block(index)
-      response = HTTP::Client.get "#{@ip}/blocks/#{index}"
+      response = HTTP::Client.get "http://#{@ip}/blocks/#{index}"
 
       Block.from_json response.body
     end

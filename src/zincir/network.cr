@@ -8,8 +8,8 @@ module Zincir
       add_node seed_node_ip if seed_node_ip
     end
 
-    def add_node(host_with_port : String, socket : HTTP::WebSocket)
-      node = Node.new "http://#{host_with_port}", socket
+    def add_node(ip : String, socket : HTTP::WebSocket)
+      node = Node.new "#{ip}", socket
 
       add_node node
     end
