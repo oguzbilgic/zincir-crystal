@@ -2,7 +2,9 @@ module Zincir
   module Web
     extend self
 
-    def start!(network, blockchain)
+    DEFAULT_PORT = 9147
+
+    def start!(port, network, blockchain)
       get "/blocks" do
         blockchain.last.to_json
       end
@@ -17,7 +19,7 @@ module Zincir
         network.add_node env.request.host_with_port.not_nil!, socket
       end
 
-      port = Random.rand(1000) + 4000
+      port ||= DEFAULT_PORT
       puts "Starting web server at port #{port}"
       logging false
       Kemal.run port

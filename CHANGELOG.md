@@ -1,4 +1,4 @@
-# next
+# backlog
 
 ## Protocol
 
@@ -6,11 +6,18 @@
 
 ## Implementation
 
-- [ ] Add CLI options for 'seed node', 'mining', 'public_ip'
-- [ ] Start web server only if the node has a public ip
+- [ ] Add CLI option to override blocks directory
 - [ ] Save know node ips to file system for future use
 - [ ] Add `Core` module for `Block`, `Blockchain` and `Difficulty`
 - [ ] Add `Network` for `Network`, `Node`, `Web`
+
+# next
+
+## Implementation
+
+- Add `--seed-ip=IP`, `--web`, `--port=PORT`, `--mine`, `-v` and `-h` CLI options
+  * Start miner only if it's enabled via `--mine`
+  * Start web server only if it's enabled via `--web` or if `--port=PORT` is specified
 
 # v0.2
 
