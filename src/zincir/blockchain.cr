@@ -5,10 +5,11 @@ module Zincir
     BLOCK_DURATION = 60.0
     UPDATE_FREQUENCY = 10
 
+    include Emitter(Block -> Void)
+
     def initialize
       @blocks = [Block.first]
       @queued_blocks = [] of Block
-      @callbacks = [] of Block -> Void
     end
 
     def last
@@ -46,10 +47,6 @@ module Zincir
       Difficulty.calculate_difficulty last.difficulty, duration, desired_duration
     end
 
-    def on_block(&block : Block -> Void)
-      @callbacks << block
-    end
-
     def queue_block(block)
       @queued_blocks << block
 
@@ -81,7 +78,7 @@ module Zincir
 
       @blocks << block
 
-      @callbacks.each { |callback| callback.call block }
+      emit :block, block
     end
 
     private def process_queued

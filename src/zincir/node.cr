@@ -1,22 +1,26 @@
 module Zincir
   class Node
+    include Emitter(Block -> Void)
+
     def initialize(@ip)
       @socket = HTTP::WebSocket.new URI.parse "#{@ip}/blocks"
 
+      listen
       spawn @socket.run
     end
 
     def initialize(@ip : String, @socket)
+      listen
+    end
+
+    private def listen
+      @socket.on_message do |msg|
+        emit :block, Block.from_json msg
+      end
     end
 
     def to_s(io)
       io << @socket
-    end
-
-    def on_block(&block : Block -> Void)
-      @socket.on_message do |msg|
-        block.call Block.from_json msg
-      end
     end
 
     def broadcast_block(block)

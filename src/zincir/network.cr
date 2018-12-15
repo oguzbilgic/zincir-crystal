@@ -1,8 +1,9 @@
 module Zincir
   class Network
+    include Emitter(Block -> Void)
+
     def initialize(seed_node_ip = nil)
       @nodes = [] of Node
-      @on_block_callbacks = [] of Block -> Void
 
       add_node seed_node_ip if seed_node_ip
     end
@@ -18,10 +19,8 @@ module Zincir
     end
 
     def add_node(node : Node)
-      node.on_block do |block|
-        @on_block_callbacks.each do |callback|
-          callback.call block
-        end
+      node.on :block do |block|
+        emit :block, block
       end
 
       @nodes << node
@@ -38,10 +37,6 @@ module Zincir
 
     def download_block(index)
       @nodes.sample.download_block index
-    end
-
-    def on_block(&block : Block -> Void)
-      @on_block_callbacks << block
     end
   end
 end

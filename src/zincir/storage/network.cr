@@ -4,11 +4,11 @@ module Zincir
       extend self
 
       def load_and_sync(blockchain, network)
-        network.on_block do |block|
+        network.on :block do |block|
           blockchain.queue_block block
         end
 
-        blockchain.on_block do |block|
+        blockchain.on :block do |block|
           network.broadcast_block block if block.mined_by_us?
         end
 

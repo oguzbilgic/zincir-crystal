@@ -6,7 +6,7 @@ module Zincir
       def load_and_sync(blockchain)
         Dir.mkdir ".blocks" unless ::File.exists? ".blocks"
 
-        blockchain.on_block do |block|
+        blockchain.on :block do |block|
           ::File.write ".blocks/#{block.hash}", block.to_json
         end
 
