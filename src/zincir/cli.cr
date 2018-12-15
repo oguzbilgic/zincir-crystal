@@ -2,9 +2,9 @@ module Zincir
   module Cli
     extend self
 
-    def run!
+    def run!(args)
       blockchain = Blockchain.new
-      network = Network.new ARGV.first?
+      network = Network.new args.first?
 
       # Read from file system
       Storage::File.load_and_sync blockchain

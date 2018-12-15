@@ -1,3 +1,3 @@
 require "./zincir"
 
-Zincir::Cli.run!
+Zincir::Cli.run! ARGV
