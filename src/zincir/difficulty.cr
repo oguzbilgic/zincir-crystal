@@ -24,10 +24,10 @@ module Zincir
     def calculate_difficulty(difficulty : Int, duration, desired_duration)
       ratio = desired_duration / duration
 
-      if ratio > 1.2
-        difficulty + ratio.to_i
-      elsif ratio < 0.8
-        difficulty - (1.0/ratio).to_i
+      if ratio > 1.5
+        difficulty + 1
+      elsif ratio < 0.5
+        difficulty - 1
       else
         difficulty
       end

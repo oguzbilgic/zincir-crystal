@@ -6,7 +6,7 @@ module Zincir
       loop do
         next_difficulty = blockchain.next_difficulty
 
-        data = "Transaction Data... #{Random.rand 5}"
+        data = "Transaction Data... #{Random.rand 100}"
         block = Block.next blockchain.last, next_difficulty, data
 
         next if block.previous_hash != blockchain.last.hash
