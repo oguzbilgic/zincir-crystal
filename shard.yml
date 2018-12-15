@@ -11,6 +11,8 @@ description: |
 targets:
   zincir:
     main: src/zincir.cr
+  zincird:
+    main: src/zincird.cr
 
 dependencies:
   kemal:
