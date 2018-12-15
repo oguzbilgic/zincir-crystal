@@ -1,3 +1,17 @@
+# next
+
+## Protocol
+
+- [ ] Add `/nodes` endpoint for node discovery
+
+## Implementation
+
+- [ ] Add CLI options for 'seed node', 'mining', 'public_ip'
+- [ ] Start web server only if the node has a public ip
+- [ ] Save know node ips to file system for future use
+- [ ] Add `Core` module for `Block`, `Blockchain` and `Difficulty`
+- [ ] Add `Network` for `Network`, `Node`, `Web`
+
 # v0.2
 
 ## Protocol
