@@ -1,10 +1,10 @@
 module Zincir
   module Web
-    extend self
-
     DEFAULT_PORT = 9147
+    DEFAULT_IP = "localhost"
 
-    def start!(port, network, blockchain)
+    def self.start!(network, blockchain, port = nil, ip = nil)
+
       get "/blocks" do
         blockchain.last.to_json
       end
@@ -20,7 +20,10 @@ module Zincir
       end
 
       port ||= DEFAULT_PORT
-      puts "Starting web server at port #{port}"
+      ip ||= DEFAULT_IP
+      puts "Starting web server at port #{ip}:#{port}"
+      network.broadcast_node_ip "#{ip}:#{port}"
+
       logging false
       Kemal.run port
     end
