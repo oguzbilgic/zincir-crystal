@@ -9,7 +9,7 @@ module Zincir
     end
 
     def add_node(host_with_port : String, socket : HTTP::WebSocket)
-      node = Node.new "http://#{host_with_port}" , socket
+      node = Node.new "http://#{host_with_port}", socket
 
       add_node node
     end

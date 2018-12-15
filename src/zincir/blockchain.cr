@@ -2,8 +2,8 @@ require "./difficulty"
 
 module Zincir
   class Blockchain
-    BLOCK_DURATION = 60.0
-    UPDATE_FREQUENCY = 10
+    BLOCK_DURATION   = 60.0
+    UPDATE_FREQUENCY =   10
 
     include Emitter(Block -> Void)
 
@@ -29,8 +29,8 @@ module Zincir
       return last.difficulty if last.index < 3
 
       if last.index < UPDATE_FREQUENCY * 3
-        first = block_at last.index-2
-        duration =  last.timestamp - first.timestamp
+        first = block_at last.index - 2
+        duration = last.timestamp - first.timestamp
         desired_duration = BLOCK_DURATION * (last.index - first.index)
 
         # TODO figure out how to use functions inside modules withouth the module name
@@ -40,7 +40,7 @@ module Zincir
       return last.difficulty if next_index % UPDATE_FREQUENCY > 0
 
       first = block_at last.index - UPDATE_FREQUENCY + 1
-      duration =  last.timestamp - first.timestamp
+      duration = last.timestamp - first.timestamp
       desired_duration = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1))
 
       # TODO figure out how to use functions inside modules withouth the module name
@@ -85,7 +85,7 @@ module Zincir
       loop do
         return if @queued_blocks.empty?
 
-        @queued_blocks.sort_by! {|b| b.index }
+        @queued_blocks.sort_by! { |b| b.index }
 
         return if next_index < @queued_blocks.first.index
 

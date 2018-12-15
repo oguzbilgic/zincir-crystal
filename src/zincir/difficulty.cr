@@ -11,14 +11,14 @@ module Zincir
         bits << byte.reverse
       end
 
-      bits.flat_map {|c| c }
+      bits.flat_map { |c| c }
     end
 
     def satisfies?(hash, difficulty : Int)
       size = (difficulty/4) + 1
       bits = hash_to_bits hash[0..size]
 
-      bits[0..difficulty-1].join("") == "0" * difficulty
+      bits[0..difficulty - 1].join("") == "0" * difficulty
     end
 
     def calculate_difficulty(difficulty : Int, duration, desired_duration)
@@ -35,7 +35,7 @@ module Zincir
 
     def satisfies?(hash, difficulty : String)
       hash_difficulty = hash[0..difficulty.size].to_i64(16)
-      hash_difficulty <= (difficulty+ "f").to_i64(16)
+      hash_difficulty <= (difficulty + "f").to_i64(16)
     end
 
     # TODO find a way to convert decimal difficulty to hex, reverse of this function
