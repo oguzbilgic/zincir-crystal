@@ -1,21 +1,25 @@
 # backlog
 
-## Protocol
-
-- [ ] Add `/nodes` endpoint for node discovery
-
 ## Implementation
 
 - [ ] Add CLI option to override blocks directory
+- [ ] Add `-d` `--daemon` CLI option
+- [ ] Log to a file if It's started as a daemon
 - [ ] Save know node ips to file system for future use
 - [ ] Add `Core` module for `Block`, `Blockchain` and `Difficulty`
 - [ ] Add `Network` for `Network`, `Node`, `Web`
 
 # next
 
+## Protocol
+
+- Change websocket messages to have different types. Currently Block or IP information
+  can be sent through the socket.
+- Add `/nodes` endpoint that returns the known nodes' ips
+
 ## Implementation
 
-- Add `--seed-ip=IP`, `--web`, `--port=PORT`, `--mine`, `-v` and `-h` CLI options
+- Add `--seed-ip=IP`, `--host-ip=IP`, --web`, `--port=PORT`, `--mine`, `-v`, `-h` CLI options
   * Start miner only if it's enabled via `--mine`
   * Start web server only if it's enabled via `--web` or if `--port=PORT` is specified
 
