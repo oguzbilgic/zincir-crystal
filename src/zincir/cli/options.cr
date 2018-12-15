@@ -1,7 +1,7 @@
 module Zincir
   module Cli
     class Options
-      property seed_ip : String? = nil
+      property seed_ip = Network::TESTNET_SEED_HOST 
       getter host_ip : String? = nil
       property? public = false
       getter port : Int32? = nil

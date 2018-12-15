@@ -2,6 +2,8 @@ module Zincir
   class Network
     include Emitter(Block -> Void)
 
+    TESTNET_SEED_HOST = "testnet.zincir.xyz:9147"
+
     @host_ip : String? = nil
     @nodes = [] of Node
 
