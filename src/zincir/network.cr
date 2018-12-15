@@ -2,19 +2,22 @@ module Zincir
   class Network
     include Emitter(Block -> Void)
 
-    def initialize(seed_node_ip = nil)
-      @nodes = [] of Node
+    @host_ip : String? = nil
+    @nodes = [] of Node
 
+    def initialize(seed_node_ip = nil)
       add_node seed_node_ip if seed_node_ip
+
+      spawn explore_nodes!
     end
 
-    def add_node(ip : String, socket : HTTP::WebSocket)
-      node = Node.new "#{ip}", socket
-
-      add_node node
+    def add_node(socket : HTTP::WebSocket)
+      add_node Node.new socket
     end
 
     def add_node(ip : String)
+      return if @nodes.map(&.ip).includes? ip
+
       add_node Node.new ip
     end
 
@@ -24,7 +27,33 @@ module Zincir
       end
 
       @nodes << node
-      puts "Connected to node: #{node}"
+      puts "New connection #{node} count: #{@nodes.size}"
+    end
+
+    private def explore_nodes!
+      loop do
+
+        all_ips = public_nodes.map(&.known_ips).flatten
+        new_ips = all_ips - public_nodes.map &.ip - [@host_ip]
+
+        new_ips.each do |ip|
+          add_node ip
+        end
+
+        sleep 10
+      end
+    end
+
+    def public_nodes
+      @nodes.select &.public?
+    end
+
+    def broadcast_host_ip(ip)
+      @host_ip = ip
+
+      @nodes.each do |node|
+        node.broadcast_host_ip ip
+      end
     end
 
     def broadcast_block(block)

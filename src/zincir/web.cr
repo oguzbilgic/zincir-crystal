@@ -4,6 +4,9 @@ module Zincir
     DEFAULT_IP = "localhost"
 
     def self.start!(network, blockchain, port = nil, ip = nil)
+      get "/nodes" do
+        network.public_nodes.map(&.ip).to_json
+      end
 
       get "/blocks" do
         blockchain.last.to_json
@@ -16,13 +19,14 @@ module Zincir
       end
 
       ws "/blocks" do |socket, env|
-        network.add_node env.request.host_with_port.not_nil!, socket
+        network.add_node socket
       end
 
       port ||= DEFAULT_PORT
       ip ||= DEFAULT_IP
       puts "Starting web server at port #{ip}:#{port}"
-      network.broadcast_node_ip "#{ip}:#{port}"
+
+      network.broadcast_host_ip "#{ip}:#{port}"
 
       logging false
       Kemal.run port
