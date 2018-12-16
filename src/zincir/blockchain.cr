@@ -43,7 +43,6 @@ module Zincir
       duration = last.timestamp - first.timestamp
       desired_duration = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1))
 
-      # TODO figure out how to use functions inside modules withouth the module name
       Difficulty.calculate_difficulty last.difficulty, duration, desired_duration
     end
 

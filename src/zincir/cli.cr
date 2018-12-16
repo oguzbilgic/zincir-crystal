@@ -4,9 +4,7 @@ require "./cli/*"
 
 module Zincir
   module Cli
-    extend self
-
-    def run!(args : Array(String))
+    def self.run!(args : Array(String))
       options = Options.new
 
       OptionParser.parse args do |parser|
@@ -32,7 +30,7 @@ module Zincir
       run! options
     end
 
-    def run!(options : Options)
+    def self.run!(options : Options)
       blockchain = Blockchain.new
       network = Network.new options.seed_ip
 

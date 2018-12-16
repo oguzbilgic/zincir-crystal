@@ -30,11 +30,11 @@ module Zincir
 
       port ||= DEFAULT_PORT
       if ip
-        puts "Starting & broadcasting web server at port #{ip}:#{port}"
+        puts "Starting & broadcasting web server at #{ip}:#{port}"
         network.broadcast_host_ip "#{ip}:#{port}"
       else
-        puts "Starting local web server at port #{ip}:#{port}"
         ip = DEFAULT_IP
+        puts "Starting local web server at #{ip}:#{port}"
       end
 
       Kemal.run port

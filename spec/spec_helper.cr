@@ -1,2 +1,2 @@
 require "spec"
-require "../src/zincir/*"
+require "../src/zincir"
