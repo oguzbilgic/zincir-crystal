@@ -9,6 +9,7 @@
 - [ ] Save know node ips to file system for future use
 - [ ] Add `Core` module for `Block`, `Blockchain` and `Difficulty`
 - [ ] Add `Network` for `Network`, `Node`, `Web`
+- [ ] Use `~/.zincir` folder for configuration and blockchain cache
 
 # next
 
