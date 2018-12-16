@@ -1,8 +1,6 @@
 module Zincir
   module Miner
-    extend self
-
-    def start!(blockchain)
+    def self.start!(blockchain)
       loop do
         next_difficulty = blockchain.next_difficulty
 
@@ -16,6 +14,8 @@ module Zincir
         blockchain.queue_block block
 
         sleep 1
+      rescue Blockchain::Exception::BlockNotAdded
+        puts "Disregarding mined block #{block}"
       end
     end
   end
