@@ -12,13 +12,16 @@ module Zincir
           network.broadcast_block block if block.mined_by_us?
         end
 
-        last_index = blockchain.last.index
-
+        go_back_index = nil
         loop do
-          last_index += 1
-          block = network.download_block last_index
+          index = go_back_index || blockchain.last.index + 1
+          block = network.download_block index
 
           blockchain.queue_block block
+          go_back_index = nil
+        rescue Blockchain::Exception::BlockHashMismatch
+          puts "Downloaded block's previous hash doesn't match with ours, will check previous..."
+          go_back_index = index.not_nil! - 2
         rescue
           break
         end
