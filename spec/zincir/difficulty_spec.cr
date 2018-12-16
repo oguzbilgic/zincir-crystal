@@ -1,40 +1,27 @@
 require "./../spec_helper"
 
 describe Zincir::Difficulty do
-  describe ".hash_to_bits" do
-    cases = [
-      {"0", [0, 0, 0, 0]},
-      {"f", [1, 1, 1, 1]},
-      {"0f", [0, 0, 0, 0, 1, 1, 1, 1]},
-    ]
-
-    cases.each do |c|
-      Zincir::Difficulty.hash_to_bits(c[0]).should eq(c[1])
-    end
-  end
-
-  describe ".satisfies?" do
-    cases = [
-      {"0", 4, true},
-      {"f", 1, false},
-      {"0f", 4, true},
-    ]
-
-    cases.each do |c|
-      Zincir::Difficulty.satisfies?(c[0], c[1]).should eq(c[2])
-    end
-  end
-
   describe ".hex_to_dec" do
     cases = [
-      {"0", 16.0},
-      {"00", 256.0},
-      {"007", 512.0},
-      {"0077", 1024.0},
-      {"1", 8.0},
-      # {"2", 5.33},
-      {"3", 4},
-      {"000034d", 958698.0571428571},
+      {"0", 65535},
+      {"5", 24575},
+
+      {"f", 65535},
+      {"ff", 65535},
+      {"fff", 65535},
+      {"ffff", 65535},
+      {"0ffff", 65535},
+      {"fffff", 65535},
+
+      {"1", 8191},
+      {"01", 8191},
+      {"01f", 8191},
+      {"01ff", 8191},
+      {"01fff", 8191},
+      {"01ffff", 8191},
+
+      {"10", 4351},
+
     ]
 
     cases.each do |c|
@@ -42,47 +29,48 @@ describe Zincir::Difficulty do
     end
   end
 
-  describe ".multiply_hex" do
-    it "correctly multiplies hex string with the decimal" do
-      Zincir::Difficulty.multiply_hex("000", 2).should eq("0008")
-      Zincir::Difficulty.multiply_hex("000", 4).should eq("0004")
-      Zincir::Difficulty.multiply_hex("000", 10).should eq("0001")
-      Zincir::Difficulty.multiply_hex("000", 16).should eq("0000")
-      Zincir::Difficulty.multiply_hex("0001", 1).should eq("0001")
-      Zincir::Difficulty.multiply_hex("0002", 2).should eq("0001")
-      Zincir::Difficulty.multiply_hex("0004", 2).should eq("0002")
-      Zincir::Difficulty.multiply_hex("0008", 8).should eq("0001")
-      Zincir::Difficulty.multiply_hex("0004", 8).should eq("00008")
-      Zincir::Difficulty.multiply_hex("00002", 3).should eq("00000aa")
+  describe ".dec_to_hex" do
+    cases = [
+      {16*65535, "ffff"},
+      {65535, "ffff"},
+      {1, "0001"},
+      {11111, "2b67"},
+      {1234, "04d2"},
+    ]
 
-      Zincir::Difficulty.multiply_hex("00003", 0.5).should eq("00006")
-      Zincir::Difficulty.multiply_hex("00003", 0.9).should eq("000035")
-      Zincir::Difficulty.multiply_hex("00003", 0.94).should eq("000033")
-      Zincir::Difficulty.multiply_hex("00003", 0.95).should eq("000032")
-      Zincir::Difficulty.multiply_hex("00003", 0.957).should eq("000032")
-      Zincir::Difficulty.multiply_hex("00003", 0.97).should eq("000031")
-      Zincir::Difficulty.multiply_hex("00003", 1.1).should eq("00002ba")
-      Zincir::Difficulty.multiply_hex("00003", 1.123).should eq("00002ab")
-      Zincir::Difficulty.multiply_hex("00003", 1.2).should eq("000028")
-      Zincir::Difficulty.multiply_hex("00003", 1.3).should eq("000024e")
+    cases.each do |c|
+      Zincir::Difficulty.dec_to_hex(c[0]).should eq(c[1])
+    end
+  end
 
-      Zincir::Difficulty.multiply_hex("0000404", 0.5).should eq("000008")
-      Zincir::Difficulty.multiply_hex("0000aaa", 0.95).should eq("0000b3")
-      Zincir::Difficulty.multiply_hex("0000aaa", 1).should eq("0000aaa")
-      Zincir::Difficulty.multiply_hex("0000aaa", 1.03).should eq("0000a5a")
-      Zincir::Difficulty.multiply_hex("0000aaa", 1.1).should eq("00009b1")
-      Zincir::Difficulty.multiply_hex("0000aaa", 1.15).should eq("0000945")
-      Zincir::Difficulty.multiply_hex("0000aaa", 1.18).should eq("0000909")
+  describe ".multipily_hex_difficulty" do
+    cases = [
+      {"f", 2.0, "7fff"},
+      {"ff", 2.0, "7fff"},
+      {"fff", 2.0, "7fff"},
+      {"ffff", 2.0, "7fff"},
 
-      # fix
-      # Zincir::Difficulty.multiply_hex("0001c9", 2.8).should eq("0000a3")
+      {"0f", 2.0, "07fff"},
+      {"0ff", 2.0, "07fff"},
+      {"0fff", 2.0, "07fff"},
+      {"0ffff", 2.0, "07fff"},
 
-      Zincir::Difficulty.multiply_hex("001", 0.25).should eq("004")
-      Zincir::Difficulty.multiply_hex("00e", 0.5).should eq("01c")
-      Zincir::Difficulty.multiply_hex("004", 0.5).should eq("008")
-      Zincir::Difficulty.multiply_hex("000", 0.25).should eq("004")
-      Zincir::Difficulty.multiply_hex("0002", 0.5).should eq("0004")
-      Zincir::Difficulty.multiply_hex("0002", 0.25).should eq("0008")
+      {"7", 2.0, "3fff"},
+      {"10", 2.0, "087f"},
+
+      {"10", 1.5, "0b54"},
+      {"0005", 1.5, "0003fff"},
+      {"0005", 1.1, "0005744"},
+      {"0005", 1.01, "0005f0b"},
+
+      {"0005", 0.5, "000bffe"},
+      {"0005", 1, "0005fff"},
+      {"0005", 8, "0000bff"},
+      {"0005", 16, "00005ff"},
+    ]
+
+    cases.each do |c|
+      Zincir::Difficulty.multipily_hex_difficulty(c[0], c[1]).should eq(c[2])
     end
   end
 end

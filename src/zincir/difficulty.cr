@@ -1,94 +1,66 @@
 module Zincir
   module Difficulty
-    extend self
+    PRECISION = 4
 
-    def hash_to_bits(hash)
-      bits = [] of Array(Int32)
+    def self.satisfies?(hash, difficulty)
+      hash_difficulty = hash[0..difficulty.size-1].to_i64(16)
+      hash_difficulty <= difficulty.to_i64(16)
+    end
 
-      hash.each_char do |char|
-        i = char.to_i(16)
-        byte = (0..3).map { |n| i.bit(n) }
-        bits << byte.reverse
+    # Converts hext to decimal ignoring leading 0s
+    # Adds trailing f as necessary to match the precision
+    def self.hex_to_dec(hex)
+      while hex.starts_with? "0"
+        hex = hex[1..-1]
       end
 
-      bits.flat_map { |c| c }
+      while hex.size > PRECISION
+        hex = hex[0..-2]
+      end
+
+      while hex.size < PRECISION
+        hex = hex + "f"
+      end
+
+      hex.to_i 16
     end
 
-    def satisfies?(hash, difficulty : Int)
-      size = (difficulty/4) + 1
-      bits = hash_to_bits hash[0..size]
+    def self.dec_to_hex(dec)
+      while dec > (16 ** PRECISION)
+        dec /= 16
+      end
 
-      bits[0..difficulty - 1].join("") == "0" * difficulty
+      hex = dec.to_s 16
+
+      while hex.size < PRECISION
+        hex = '0' + hex
+      end
+
+      hex
     end
 
-    def calculate_difficulty(difficulty : Int, duration, desired_duration)
+    def self.multipily_hex_difficulty(difficulty, multiplier)
+      zero_count = 0
+      difficulty.chars.each do |char|
+        break unless char == '0'
+        zero_count += 1
+      end
+
+      decimal = hex_to_dec difficulty
+      product = decimal / multiplier
+      hex_product = dec_to_hex product.to_i
+
+      ("0" * zero_count) + hex_product
+    end
+
+    def self.calculate_difficulty(difficulty : String, duration, desired_duration)
       ratio = desired_duration / duration
 
-      if ratio > 1.5
-        difficulty + 1
-      elsif ratio < 0.5
-        difficulty - 1
+      if ratio > 1.1 || ratio < 0.9
+        multipily_hex_difficulty difficulty, ratio
       else
         difficulty
       end
-    end
-
-    def satisfies?(hash, difficulty : String)
-      hash_difficulty = hash[0..difficulty.size].to_i64(16)
-      hash_difficulty <= (difficulty + "f").to_i64(16)
-    end
-
-    # TODO find a way to convert decimal difficulty to hex, reverse of this function
-    def hex_to_dec(hex)
-      nums = [] of Float64
-      hex.each_char do |char|
-        nums << (16.0 / (char.to_i(16) + 1))
-      end
-
-      return nums.reduce { |a, b| a * b }
-    end
-
-    # TODO
-    def multiply_hex(hex, decimal)
-      if decimal >= 16
-        return "0" + hex
-      end
-
-      if decimal < 1
-        still = decimal * 16
-        return multiply_hex hex[1..-1], still
-      end
-
-      if hex.ends_with? '0'
-        diff = 16 / decimal
-        return hex + diff.to_i.to_s(16)
-      end
-
-      count = hex.count('0')
-      # f_added = hex + "0"
-      size = hex.to_i(16).to_s.size
-      int_hex = hex.to_i(16)
-      int_hex = hex.to_i(16) * 16 if size == 2
-      int_hex = hex.to_i(16) * 16 * 16 if size == 1
-      diff = int_hex.not_nil! / decimal
-
-      if hex[-1].to_i(16) < decimal
-        result = ("0" * count) + "0" + diff.to_i.to_s(16)
-      else
-        result = ("0" * count) + diff.to_i.to_s(16)
-      end
-
-      while result.ends_with? '0'
-        result = result[0..-2]
-      end
-      result
-    end
-
-    # TODO figure out a sound way to calculate difficulty
-    def calculate_difficulty(difficulty : String, duration, desired_duration)
-      ratio = desired_duration / duration
-
-      multiply_hex difficulty, ratio
     end
   end
 end

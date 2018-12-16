@@ -26,16 +26,7 @@ module Zincir
 
     # TODO clean up
     def next_difficulty
-      return last.difficulty if last.index < 3
-
-      if last.index < UPDATE_FREQUENCY * 3
-        first = block_at last.index - 2
-        duration = last.timestamp - first.timestamp
-        desired_duration = BLOCK_DURATION * (last.index - first.index)
-
-        # TODO figure out how to use functions inside modules withouth the module name
-        return Difficulty.calculate_difficulty last.difficulty, duration, desired_duration
-      end
+      return last.difficulty if last.index == UPDATE_FREQUENCY - 1
 
       return last.difficulty if next_index % UPDATE_FREQUENCY > 0
 

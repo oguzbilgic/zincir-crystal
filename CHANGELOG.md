@@ -14,6 +14,7 @@
 
 ## Protocol
 
+- Much more accurate difficulty calculation
 - Change websocket messages to have different types. Currently Block or IP information
   can be sent through the socket.
 - Add `/nodes` endpoint that returns the known nodes' ips
