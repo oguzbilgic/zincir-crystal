@@ -1,7 +1,5 @@
 # backlog
 
-## Implementation
-
 - [ ] BUG: Remove disconnected nodes from the Network
 - [ ] Add CLI option to override blocks directory
 - [ ] Add `-d` `--daemon` CLI option
@@ -22,13 +20,20 @@
 
 ## Node
 
-- Traverse chain backwards from the seed node if there is a hash mismatch
+- Connect to `Network::TESTNET_SEED_HOST` by default
+- Explore the network continuously for new public nodes and connect
+- Traverse blockchain backwards from the seed node if there is a hash mismatch
 - Delete the block file if it's not added to the blockchain
 - Broadcast our block to the network if the received block is not preferred
-- Use `Network::TESTNET_SEED_HOST` as the default seed host
-- Add `--seed-ip=IP`, `--host-ip=IP`, --web`, `--port=PORT`, `--mine`, `-v`, `-h`, `-l` CLI options
-  * Start miner only if it's enabled via `--mine`
-  * Start web server only if it's enabled via `--web` or if `--port=PORT` is specified
+- Add CLI options
+  * `--seed-ip=IP`
+  * `--host-ip=IP`
+  * `--port=PORT`
+  * `--local-net`
+  * `--mine`
+  * `--web`
+  * `--version`
+  * `--help`
 
 ## Code
 
