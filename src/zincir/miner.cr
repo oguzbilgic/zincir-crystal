@@ -1,20 +1,17 @@
 module Zincir
   module Miner
+    # Starts mining the blockchain 
+    #
+    # TODO: If block is solved in the meantime move onto the next block immediately
     def self.start!(blockchain)
       loop do
         next_difficulty = blockchain.next_difficulty
-
         data = "Transaction Data... #{Random.rand 100}"
         block = Block.next blockchain.last, next_difficulty, data
 
-        next if block.previous_hash != blockchain.last.hash
-
-        next if block.timestamp <= blockchain.last.timestamp
-
         blockchain.queue_block block
-
-        sleep 1
       rescue Blockchain::BlockNotAdded
+        sleep 1
         puts "Disregarding mined block #{block}"
       end
     end
