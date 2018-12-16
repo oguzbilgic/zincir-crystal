@@ -19,9 +19,9 @@ module Zincir
 
           blockchain.queue_block block
           go_back_index = nil
-        rescue Blockchain::BlockHashMismatch
+        rescue Blockchain::BlockHashMismatch | Blockchain::BlockOnForkChain
           puts "Downloaded block's previous hash doesn't match with ours, will check previous..."
-          go_back_index = index.not_nil! - 2
+          go_back_index = go_back_index ? go_back_index -1 : index.not_nil! - 2
         rescue Blockchain::BlockNotPreferred
           network.broadcast_block blockchain.block_at index.not_nil!
           puts "Received block is disregarded #{block}"

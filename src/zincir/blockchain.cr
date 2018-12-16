@@ -9,6 +9,7 @@ module Zincir
     class BlockNotPreferred < BlockNotAdded end
     class BlockTimeError < BlockNotAdded end
     class BlockNotValid < BlockNotAdded end
+    class BlockOnForkChain  < BlockNotAdded end
 
     # Desired time between blocks
     BLOCK_DURATION   = 60.0
@@ -56,15 +57,12 @@ module Zincir
       @queued_blocks << block
 
       until @queued_blocks.empty?
-        begin
-          block = @queued_blocks.sort_by!(&.index).shift
+        first_block = @queued_blocks.sort_by!(&.index).shift
 
-          add_block block
-        rescue BlockIndexTooHigh
-          @queued_blocks << block
-          break
-        end
+        add_block first_block
       end
+    rescue BlockIndexTooHigh
+      @queued_blocks << first_block.not_nil!
     end
 
     private def add_block(block)
@@ -81,14 +79,20 @@ module Zincir
 
         return if our_block.hash == block.hash
 
-        if our_block.timestamp <= block.timestamp
-          raise BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
+        # if this is the first block of the fork
+        if our_block.previous_hash == block.previous_hash
+          # raise if the forked chain's first block isn't better than ours
+          if our_block.timestamp <= block.timestamp
+            raise BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
+          end
+
+          puts "Reseting chain with #{block}"
+          @blocks = @blocks[0..block.index]
+          @blocks << block
+          return
         end
 
-        puts "Reseting chain with #{block}"
-
-        @blocks = @blocks[0..block.index]
-        return
+        raise BlockOnForkChain.new
       end
 
       if block.previous_hash != last.hash
