@@ -25,6 +25,7 @@
 - Add `--seed-ip=IP`, `--host-ip=IP`, --web`, `--port=PORT`, `--mine`, `-v`, `-h`, `-l` CLI options
   * Start miner only if it's enabled via `--mine`
   * Start web server only if it's enabled via `--web` or if `--port=PORT` is specified
+- Delete block fil if it's not added to the blockchain
 - Add `Network::TESTNET_SEED_HOST` as a default seed host for CLI
 - Add `Blockchain::Exception` module
 
