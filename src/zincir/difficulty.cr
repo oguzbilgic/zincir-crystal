@@ -27,6 +27,12 @@ module Zincir
       end
     end
 
+    # Returns true if the given `String` is a valid *difficulty*
+    #
+    # TODO: Implement
+    def self.valid?(difficulty)
+    end
+
     private def self.multiply(difficulty, multiplier)
       zero_count = 0
       difficulty.chars.each do |char|

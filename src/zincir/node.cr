@@ -14,6 +14,7 @@ module Zincir
 
     getter ip
 
+    # Creates a `Node` with the given *ip* and connects via websocket
     def initialize(@ip : String)
       @socket = HTTP::WebSocket.new "http://#{ip}/blocks"
 
@@ -21,6 +22,7 @@ module Zincir
       spawn @socket.run
     end
 
+    # Creates a `Node` with the given *socket* connection
     def initialize(@socket : HTTP::WebSocket, @ip = nil)
       listen
     end
@@ -39,10 +41,12 @@ module Zincir
       end
     end
 
+    # Returns true if the `Node` is publicly accessible via it's `#ip`
     def public?
       @ip != nil
     end
 
+    # Returns true if the `#socket` is open
     def connected?
       !@socket.closed?
     end

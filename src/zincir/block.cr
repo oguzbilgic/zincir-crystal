@@ -16,9 +16,10 @@ module Zincir
     )
 
     # Creates a `Block` with the given information and solves the hash
+    #
+    # TODO: Verify if the difficulty is valid
     def initialize(@index, @timestamp, @data, @previous_hash, @difficulty)
       @mined_by_us = true
-      # verify if the difficulty is valid
       @nonce, @hash = solve_block @difficulty
     end
 
