@@ -6,6 +6,7 @@ module Zincir
       property port : Int32? = nil
       property? mine = false
       property? web = false
+      property? local = false
     end
   end
 end

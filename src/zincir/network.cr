@@ -20,6 +20,8 @@ module Zincir
     def add_node(ip : String)
       return if @nodes.map(&.ip).includes? ip
 
+      return if @host_ip == ip
+
       add_node Node.new ip
     end
 

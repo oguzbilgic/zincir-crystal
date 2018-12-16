@@ -13,6 +13,7 @@ module Zincir
         parser.on("-s IP", "--seed-ip=IP", "Specify ip for the seed node") { |i| options.seed_ip = i }
         parser.on("-i IP", "--host-ip=IP", "Specify ip for the host node") { |i| options.host_ip = i }
         parser.on("-p PORT", "--port=PORT", "Start public server for other nodes to connect") { |i| options.port = i.to_i }
+        parser.on("-l", "--local-net", "Prevents initial seed node connections") { |i| options.local = true }
         parser.on("-w", "--web", "Enable web server ") { |i| options.web = true }
         parser.on("-m", "--mine", "Enable mining") { options.mine = true }
 
@@ -32,7 +33,9 @@ module Zincir
 
     def self.run!(options : Options)
       blockchain = Blockchain.new
-      network = Network.new options.seed_ip
+
+      seed_ip = options.local? ? nil : options.seed_ip
+      network = Network.new seed_ip
 
       # Read from file system
       Storage::File.load_and_sync blockchain
