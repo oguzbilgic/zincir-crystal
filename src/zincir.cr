@@ -8,5 +8,5 @@ require "./zincir/*"
 require "./zincir/storage/*"
 
 module Zincir
-  VERSION = "0.2"
+  VERSION = "0.3"
 end

@@ -9,7 +9,7 @@
 - [ ] Add `Network` for `Network`, `Node`, `Web`
 - [ ] Use `~/.zincir` folder for configuration and blockchain cache
 
-# next
+# v0.3
 
 ## Protocol
 
