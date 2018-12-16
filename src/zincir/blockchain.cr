@@ -82,13 +82,14 @@ module Zincir
         # if this is the first block of the fork
         if our_block.previous_hash == block.previous_hash
           # raise if the forked chain's first block isn't better than ours
-          if our_block.timestamp <= block.timestamp
+          if our_block.timestamp < block.timestamp
             raise BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
           end
 
           puts "Reseting chain with #{block}"
           @blocks = @blocks[0..block.index]
           @blocks << block
+          emit :block, block
           return
         end
 
@@ -112,9 +113,7 @@ module Zincir
       end
 
       puts "#{block.mined_by_us? ? "Mined" : "Added"} #{block}"
-
       @blocks << block
-
       emit :block, block
     end
   end
