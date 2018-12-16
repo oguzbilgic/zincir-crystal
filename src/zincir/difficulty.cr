@@ -1,12 +1,22 @@
 module Zincir
   module Difficulty
+    # Number of non zero characters at the end of the difficulty
+    #
+    # ````
+    # "000000f" # precision 1
+    # "004f0" # precision 3
+    # "0014f0" # precision 4
+    # "14f000" # precision 6
+    # ````
     PRECISION = 4
 
+    # Returs true if the given *hash* satisfies the given *difficulty*
     def self.satisfies?(hash, difficulty)
       hash_difficulty = hash[0..difficulty.size-1].to_i64(16)
       hash_difficulty <= difficulty.to_i64(16)
     end
 
+    # Returns the adjusted difficulty for the given *duration* and *desired_duration*
     def self.calculate(current_difficulty : String, duration, desired_duration)
       ratio = desired_duration / duration
 

@@ -10,29 +10,35 @@ module Zincir
     class BlockTimeError < BlockNotAdded end
     class BlockNotValid < BlockNotAdded end
 
+    # Desired time between blocks
     BLOCK_DURATION   = 60.0
+    # Number of blocks between difficulty adjustments
     UPDATE_FREQUENCY =   60
 
     include Emitter(Block -> Void)
 
+    # Creates a blockchain with the first block
     def initialize
       @blocks = [Block.first]
       @queued_blocks = [] of Block
     end
 
+    # Returns the last `Block` in the blockchain
     def last
       @blocks.last
     end
 
+    # Returns the `Block` at *index*
     def block_at(index)
       @blocks[index]
     end
 
+    # Returns the index of the expected `Block`
     def next_index
       last.index + 1
     end
 
-    # TODO clean up
+    # Returns the required difficulty for the next `Block`
     def next_difficulty
       return last.difficulty if last.index == UPDATE_FREQUENCY - 1
 
@@ -45,6 +51,7 @@ module Zincir
       Difficulty.calculate last.difficulty, duration, desired_duration
     end
 
+    # Queues the *block* to be added to the blockchain
     def queue_block(block)
       @queued_blocks << block
 
