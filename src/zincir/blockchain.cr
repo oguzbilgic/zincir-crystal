@@ -13,7 +13,7 @@ module Zincir
     end
 
     BLOCK_DURATION   = 60.0
-    UPDATE_FREQUENCY =   10
+    UPDATE_FREQUENCY =   60
 
     include Emitter(Block -> Void)
 

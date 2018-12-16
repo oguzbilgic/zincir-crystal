@@ -13,6 +13,7 @@
 
 ## Protocol
 
+- Adjust difficulty every 60 blocks
 - Much more accurate difficulty calculation
 - Change websocket messages to have different types. Currently Block or IP information
   can be sent through the socket.
@@ -37,19 +38,20 @@
 
 ## Code
 
-- Add `Blockchain::Exception` module
+- Add `Blockchain::Exception`, `CLI::Options` modules
 
 # v0.2
 
 ## Protocol
 
-- Adjust difficulty using bits
-- Use websocket for broadcasting solved blocks
+- Add `/blocks` websocket endpoint
 - Remove `/connect` and `/relay` endpoints
+- Adjust difficulty using bits
 
 ## Node
 
 - Store blockchain in `.block/` folder
+- Use websocket for broadcasting solved blocks
 
 ## Code
 
