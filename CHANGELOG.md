@@ -38,7 +38,9 @@
 
 ## Code
 
-- Add `Blockchain::Exception`, `CLI::Options` modules
+- Add `Blockchain::BlockNotAdded` exceptions
+- Add `CLI::Options` modules
+- Add initial documentation
 
 # v0.2
 

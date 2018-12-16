@@ -1,6 +1,8 @@
-# Zincir Crystal
+![Zincir](http://i63.tinypic.com/2eznrso.png)
 
-Simple distributed blockchain experiment written in Crystal
+Simple distributed blockchain experiment written in [Crystal](https://crystal-lang.org)
+
+## Usage
 
 ### Install shards
 
