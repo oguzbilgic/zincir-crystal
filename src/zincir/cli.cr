@@ -14,9 +14,8 @@ module Zincir
 
         parser.on("-s IP", "--seed-ip=IP", "Specify ip for the seed node") { |i| options.seed_ip = i }
         parser.on("-i IP", "--host-ip=IP", "Specify ip for the host node") { |i| options.host_ip = i }
-        parser.on("-p=PORT", "--port=PORT", "Start public server for other nodes to connect") { |i| options.port = i.to_i }
-        parser.on("-w", "--web", "Start public server for other nodes to connect") { |i| options.public = true }
-        # parser.on("-d DIR", "--dir=DIR", "Overide default cache directory") { |i| options.dir = i }
+        parser.on("-p PORT", "--port=PORT", "Start public server for other nodes to connect") { |i| options.port = i.to_i }
+        parser.on("-w", "--web", "Enable web server ") { |i| options.web = true }
         parser.on("-m", "--mine", "Enable mining") { options.mine = true }
 
         parser.on("-h", "--help", "Show this help") do
@@ -43,8 +42,10 @@ module Zincir
       # Sync with network
       Storage::Network.load_and_sync blockchain, network
 
-      # Start web server if public
-      spawn Web.start! network, blockchain, options.port, options.host_ip if options.public?
+      # Start web server if enabled
+      if options.web? || options.port || options.host_ip
+        spawn Web.start! network, blockchain, options.port, options.host_ip
+      end
 
       # Start miner if mining
       spawn Miner.start! blockchain if options.mine?

@@ -4,6 +4,12 @@ module Zincir
     DEFAULT_IP = "localhost"
 
     def self.start!(network, blockchain, port = nil, ip = nil)
+      logging false
+
+      before_all do |env|
+        env.response.headers.add("Access-Control-Allow-Origin", "*")
+      end
+
       get "/nodes" do
         network.public_nodes.map(&.ip).to_json
       end
@@ -23,12 +29,14 @@ module Zincir
       end
 
       port ||= DEFAULT_PORT
-      ip ||= DEFAULT_IP
-      puts "Starting web server at port #{ip}:#{port}"
+      if ip
+        puts "Starting & broadcasting web server at port #{ip}:#{port}"
+        network.broadcast_host_ip "#{ip}:#{port}"
+      else
+        puts "Starting local web server at port #{ip}:#{port}"
+        ip = DEFAULT_IP
+      end
 
-      network.broadcast_host_ip "#{ip}:#{port}"
-
-      logging false
       Kemal.run port
     end
   end
