@@ -9,8 +9,6 @@ description: |
   Simple distributed blockchain experiment written in Crystal
 
 targets:
-  zincir:
-    main: src/zincir.cr
   zincird:
     main: src/zincird.cr
 
