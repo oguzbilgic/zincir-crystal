@@ -22,6 +22,11 @@ module Zincir
         rescue Blockchain::Exception::BlockHashMismatch
           puts "Downloaded block's previous hash doesn't match with ours, will check previous..."
           go_back_index = index.not_nil! - 2
+        rescue Blockchain::Exception::BlockNotPreferred
+          network.broadcast_block blockchain.block_at index.not_nil!
+          puts "Received block is disregarded #{block}"
+          puts "Broadcasting the preffered block to network"
+          break
         rescue
           break
         end
