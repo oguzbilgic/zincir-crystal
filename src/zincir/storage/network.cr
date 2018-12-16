@@ -19,7 +19,7 @@ module Zincir
 
           blockchain.queue_block block
           go_back_index = nil
-        rescue Blockchain::BlockHashMismatch | Blockchain::BlockOnForkChain
+        rescue Blockchain::BlockOnForkChain
           puts "Downloaded block's previous hash doesn't match with ours, will check previous..."
           go_back_index = go_back_index ? go_back_index -1 : index.not_nil! - 2
         rescue Blockchain::BlockNotPreferred

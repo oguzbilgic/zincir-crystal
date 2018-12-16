@@ -3,12 +3,8 @@ require "./difficulty"
 module Zincir
   class Blockchain
     class BlockNotAdded < ::Exception end
-    class BlockHashMismatch < BlockNotAdded end
     class BlockIndexTooHigh < BlockNotAdded end
-    class BlockDifficultyError < BlockNotAdded end
     class BlockNotPreferred < BlockNotAdded end
-    class BlockTimeError < BlockNotAdded end
-    class BlockNotValid < BlockNotAdded end
     class BlockOnForkChain  < BlockNotAdded end
 
     # Desired time between blocks
@@ -67,7 +63,7 @@ module Zincir
 
     private def add_block(block)
       unless block.valid?
-        raise BlockNotValid.new "Invalid block at index #{block.index}"
+        raise BlockNotAdded.new "Invalid block at index #{block.index}"
       end
 
       if block.index > next_index
@@ -80,32 +76,33 @@ module Zincir
         return if our_block.hash == block.hash
 
         # if this is the first block of the fork
-        if our_block.previous_hash == block.previous_hash
-          # raise if the forked chain's first block isn't better than ours
-          if our_block.timestamp < block.timestamp
-            raise BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
-          end
-
-          puts "Reseting chain with #{block}"
-          @blocks = @blocks[0..block.index]
-          @blocks << block
-          emit :block, block
-          return
+        if our_block.previous_hash != block.previous_hash
+          raise BlockOnForkChain.new
         end
 
-        raise BlockOnForkChain.new
+        # raise if the forked chain's first block isn't better than ours
+        if our_block.timestamp < block.timestamp
+          raise BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
+        end
+
+        puts "Reseting chain with #{block}"
+        @blocks = @blocks[0..block.index]
+        @blocks << block
+        emit :block, block
+        return
       end
 
       if block.previous_hash != last.hash
-        raise BlockHashMismatch.new "Hash mismatch for block at index #{block.index}"
+        # raise BlockHashMismatch.new "Hash mismatch for block at index #{block.index}"
+        raise BlockOnForkChain.new
       end
 
       if block.difficulty != next_difficulty
-        raise BlockDifficultyError.new "Wrong difficulty block: #{block.difficulty} our: #{next_difficulty}"
+        raise BlockNotAdded.new "Wrong difficulty block: #{block.difficulty} our: #{next_difficulty}"
       end
 
       if block.timestamp <= last.timestamp
-        raise BlockTimeError.new "Block time is wrong #{block.index}"
+        raise BlockNotAdded.new "Block time is wrong #{block.index}"
       end
 
       if last.difficulty != block.difficulty
