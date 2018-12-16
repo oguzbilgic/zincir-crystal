@@ -2,6 +2,16 @@ require "./difficulty"
 
 module Zincir
   class Blockchain
+    module Exception
+      class BlockNotAdded < ::Exception end
+      class BlockHashMismatch < BlockNotAdded end
+      class BlockIndexTooHigh < BlockNotAdded end
+      class BlockDifficultyError < BlockNotAdded end
+      class BlockNotPreferred < BlockNotAdded end
+      class BlockTimeError < BlockNotAdded end
+      class InvalidBlock < BlockNotAdded end
+    end
+
     BLOCK_DURATION   = 60.0
     UPDATE_FREQUENCY =   10
 
@@ -40,24 +50,52 @@ module Zincir
     def queue_block(block)
       @queued_blocks << block
 
-      process_queued
+      until @queued_blocks.empty?
+        begin
+          block = @queued_blocks.sort_by!(&.index).shift
+
+          add_block block
+        rescue Exception::BlockIndexTooHigh
+          @queued_blocks << block
+          break
+        end
+      end
     end
 
     private def add_block(block)
       unless block.valid?
-        raise "Invalid block #{block.index}"
+        raise Exception::InvalidBlock.new "Invalid block at index #{block.index}"
+      end
+
+      if block.index > next_index
+        raise Exception::BlockIndexTooHigh.new
+      end
+
+      if next_index > block.index
+        our_block = block_at block.index
+
+        return if our_block.hash == block.hash
+
+        if our_block.timestamp <= block.timestamp
+          raise Exception::BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
+        end
+
+        puts "Reseting chain with #{block}"
+
+        @blocks = @blocks[0..block.index]
+        return
       end
 
       if block.previous_hash != last.hash
-        raise "Hash mismatch for block at index #{block.index}"
+        raise Exception::BlockHashMismatch.new "Hash mismatch for block at index #{block.index}"
       end
 
       if block.difficulty != next_difficulty
-        raise "Difficulty mismatch #{block.difficulty} #{next_difficulty}"
+        raise Exception::BlockDifficultyError.new "Wrong difficulty block: #{block.difficulty} our: #{next_difficulty}"
       end
 
       if block.timestamp <= last.timestamp
-        raise "Block time is wrong #{block.index}"
+        raise Exception::BlockTimeError.new "Block time is wrong #{block.index}"
       end
 
       if last.difficulty != block.difficulty
@@ -69,32 +107,6 @@ module Zincir
       @blocks << block
 
       emit :block, block
-    end
-
-    private def process_queued
-      loop do
-        return if @queued_blocks.empty?
-
-        @queued_blocks.sort_by! { |b| b.index }
-
-        return if next_index < @queued_blocks.first.index
-
-        block = @queued_blocks.shift
-
-        # if block has a lower index
-        if next_index > block.index
-          our_block = block_at block.index
-
-          return if our_block.hash == block.hash
-
-          return if our_block.timestamp <= block.timestamp
-
-          puts "Reseting chain with #{block}"
-          @blocks = @blocks[0..block.index]
-        end
-
-        add_block block
-      end
     end
   end
 end
