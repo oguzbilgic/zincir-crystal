@@ -30,7 +30,7 @@ module Zincir
     end
 
     def to_s(io)
-      io << "<#{index}-#{@hash[0..8]}..#{@hash[-3..-1]}> #{@timestamp}"
+      io << "<#{index}-#{@hash[0..15]}..#{@hash[-3..-1]}@#{@timestamp}>"
     end
 
     def valid?
