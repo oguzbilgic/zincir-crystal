@@ -43,7 +43,7 @@ describe Zincir::Difficulty do
     end
   end
 
-  describe ".multipily_hex_difficulty" do
+  describe ".multipily" do
     cases = [
       {"f", 2.0, "7fff"},
       {"ff", 2.0, "7fff"},

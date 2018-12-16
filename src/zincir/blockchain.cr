@@ -42,7 +42,7 @@ module Zincir
       duration = last.timestamp - first.timestamp
       desired_duration = (BLOCK_DURATION * (UPDATE_FREQUENCY - 1))
 
-      Difficulty.calculate_difficulty last.difficulty, duration, desired_duration
+      Difficulty.calculate last.difficulty, duration, desired_duration
     end
 
     def queue_block(block)
