@@ -2,15 +2,13 @@ require "./difficulty"
 
 module Zincir
   class Blockchain
-    module Exception
-      class BlockNotAdded < ::Exception end
-      class BlockHashMismatch < BlockNotAdded end
-      class BlockIndexTooHigh < BlockNotAdded end
-      class BlockDifficultyError < BlockNotAdded end
-      class BlockNotPreferred < BlockNotAdded end
-      class BlockTimeError < BlockNotAdded end
-      class InvalidBlock < BlockNotAdded end
-    end
+    class BlockNotAdded < ::Exception end
+    class BlockHashMismatch < BlockNotAdded end
+    class BlockIndexTooHigh < BlockNotAdded end
+    class BlockDifficultyError < BlockNotAdded end
+    class BlockNotPreferred < BlockNotAdded end
+    class BlockTimeError < BlockNotAdded end
+    class BlockNotValid < BlockNotAdded end
 
     BLOCK_DURATION   = 60.0
     UPDATE_FREQUENCY =   60
@@ -55,7 +53,7 @@ module Zincir
           block = @queued_blocks.sort_by!(&.index).shift
 
           add_block block
-        rescue Exception::BlockIndexTooHigh
+        rescue BlockIndexTooHigh
           @queued_blocks << block
           break
         end
@@ -64,11 +62,11 @@ module Zincir
 
     private def add_block(block)
       unless block.valid?
-        raise Exception::InvalidBlock.new "Invalid block at index #{block.index}"
+        raise BlockNotValid.new "Invalid block at index #{block.index}"
       end
 
       if block.index > next_index
-        raise Exception::BlockIndexTooHigh.new
+        raise BlockIndexTooHigh.new
       end
 
       if next_index > block.index
@@ -77,7 +75,7 @@ module Zincir
         return if our_block.hash == block.hash
 
         if our_block.timestamp <= block.timestamp
-          raise Exception::BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
+          raise BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
         end
 
         puts "Reseting chain with #{block}"
@@ -87,15 +85,15 @@ module Zincir
       end
 
       if block.previous_hash != last.hash
-        raise Exception::BlockHashMismatch.new "Hash mismatch for block at index #{block.index}"
+        raise BlockHashMismatch.new "Hash mismatch for block at index #{block.index}"
       end
 
       if block.difficulty != next_difficulty
-        raise Exception::BlockDifficultyError.new "Wrong difficulty block: #{block.difficulty} our: #{next_difficulty}"
+        raise BlockDifficultyError.new "Wrong difficulty block: #{block.difficulty} our: #{next_difficulty}"
       end
 
       if block.timestamp <= last.timestamp
-        raise Exception::BlockTimeError.new "Block time is wrong #{block.index}"
+        raise BlockTimeError.new "Block time is wrong #{block.index}"
       end
 
       if last.difficulty != block.difficulty

@@ -12,7 +12,7 @@ module Zincir
           file = ::File.read ".blocks/#{filename}"
           block = Block.from_json file
           blockchain.queue_block block
-        rescue Blockchain::Exception::BlockNotAdded
+        rescue Blockchain::BlockNotAdded
           ::File.delete ".blocks/#{block.hash}"
           puts "Filesystem block is disregarded, deleting file.."
           next

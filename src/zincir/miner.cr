@@ -14,7 +14,7 @@ module Zincir
         blockchain.queue_block block
 
         sleep 1
-      rescue Blockchain::Exception::BlockNotAdded
+      rescue Blockchain::BlockNotAdded
         puts "Disregarding mined block #{block}"
       end
     end
