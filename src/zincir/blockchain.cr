@@ -90,7 +90,7 @@ module Zincir
         end
 
         puts "Reseting chain with #{block}"
-        @blocks = @blocks[0..block.index]
+        @blocks = @blocks[0..block.index-1]
         @blocks << block
         emit :block, block
         return
