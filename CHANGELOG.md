@@ -9,7 +9,11 @@
 - [ ] Add `Network` for `Network`, `Node`, `Web`
 - [ ] Use `~/.zincir` folder for configuration and blockchain cache
 
-# next
+# v0.3.1
+
+- Fix critical blockchain bug which prevented resetting the chain
+- Make miner skip the mined block if another block is already added to chain with the
+  same index
 
 ## Node
 
