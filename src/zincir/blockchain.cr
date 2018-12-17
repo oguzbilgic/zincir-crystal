@@ -1,3 +1,4 @@
+require "colorize"
 require "./difficulty"
 
 module Zincir
@@ -113,7 +114,12 @@ module Zincir
         puts "Difficulty #{last.difficulty} -> #{block.difficulty}"
       end
 
-      puts "#{block.mined_by_us? ? "Mined" : "Added"} #{block}"
+      if block.mined_by_us?
+        puts "Mined".colorize(:green).to_s + " #{block}"
+      else
+        puts "Added".colorize(:blue).to_s + " #{block}"
+      end
+
       @blocks << block
       emit :block, block
     end
