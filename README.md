@@ -1,4 +1,4 @@
-![Zincir](http://i63.tinypic.com/2eznrso.png)
+# Zincir 
 
 Simple distributed blockchain experiment written in [Crystal](https://crystal-lang.org)
 
