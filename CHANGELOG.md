@@ -11,12 +11,11 @@
 
 # v0.3.1
 
+## Node
+
 - Fix critical blockchain bug which prevented resetting the chain
 - Make miner skip the mined block if another block is already added to chain with the
   same index
-
-## Node
-
 - Use different colors for logs
 
 # v0.3
