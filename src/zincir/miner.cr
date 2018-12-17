@@ -9,6 +9,10 @@ module Zincir
         data = "Transaction Data... #{Random.rand 100}"
         block = Block.next blockchain.last, next_difficulty, data
 
+        # This can be removed when miner is able stop mining the block
+        # when it's already added to the chain by another miner
+        next if block.index != blockchain.next_index
+
         blockchain.queue_block block
       rescue Blockchain::BlockNotAdded
       end
