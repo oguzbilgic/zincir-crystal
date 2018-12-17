@@ -1,6 +1,6 @@
 module Zincir
   module Miner
-    # Starts mining the blockchain 
+    # Starts mining the blockchain
     #
     # TODO: If block is solved in the meantime move onto the next block immediately
     def self.start!(blockchain)
@@ -11,8 +11,6 @@ module Zincir
 
         blockchain.queue_block block
       rescue Blockchain::BlockNotAdded
-        sleep 1
-        puts "Disregarding mined block #{block}"
       end
     end
   end

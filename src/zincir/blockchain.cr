@@ -61,6 +61,7 @@ module Zincir
       @queued_blocks << first_block.not_nil!
     end
 
+    # TODO: Handle blocks with future timestamp
     private def add_block(block)
       unless block.valid?
         raise BlockNotAdded.new "Invalid block at index #{block.index}"
@@ -81,7 +82,10 @@ module Zincir
         end
 
         # raise if the forked chain's first block isn't better than ours
-        if our_block.timestamp < block.timestamp
+        #
+        # TODO: This is not a good way to pick blocks, miner can set the time to
+        # last.timestamp + 1, to make a preferable block
+        if our_block.timestamp <= block.timestamp
           raise BlockNotPreferred.new "Blockchain contains a better block for index #{block.index}"
         end
 
@@ -102,7 +106,7 @@ module Zincir
       end
 
       if block.timestamp <= last.timestamp
-        raise BlockNotAdded.new "Block time is wrong #{block.index}"
+        raise BlockNotAdded.new "Block time is wrong #{block}"
       end
 
       if last.difficulty != block.difficulty
