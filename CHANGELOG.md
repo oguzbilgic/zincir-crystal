@@ -2,14 +2,14 @@
 
 - Keep a list of offline ips and try to connect them periodically
 - Rebroadcast the received block if its coming from a private node
-- Add CLI option to override blocks directory
 - Add `-d` `--daemon` CLI option
-- Log to a file if It's started as a daemon
 - Save know node ips to file system for future use
+- Add `/info` endpoint that returns node info such as client version
 - Add `Core` module for `Block`, `Blockchain` and `Difficulty`
 - Add `Network` for `Network`, `Node`, `Web`
 - Use `~/.zincir` folder for configuration and blockchain cache
-- Add `/info` endpoint that returns node info such as client version
+- Add CLI option to override `~/.zincir` directory
+- Log to a file if It's started as a daemon
 
 ## next
 
@@ -17,6 +17,7 @@
 
 - Fix hex overflow bug in Difficulty.multiply which resulted in higher
   difficulty while It was trying to reduce the difficulty
+- Fix Storage::Network bug which caused broadcasting existing block
 
 # v0.4.0
 
