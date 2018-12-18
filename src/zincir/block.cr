@@ -18,9 +18,14 @@ module Zincir
     # Creates a `Block` with the given information and solves the hash
     #
     # TODO: Verify if the difficulty is valid
-    def initialize(@index, @timestamp, @data, @previous_hash, @difficulty)
+    def initialize(@index, @timestamp, @data, @previous_hash, @difficulty, nonce = nil)
       @mined_by_us = true
-      @nonce, @hash = solve_block @difficulty
+      if nonce
+        @nonce = nonce
+        @hash  = calculate_hash @nonce
+      else
+        @nonce, @hash = solve_block @difficulty
+      end
     end
 
     # Returns the first `Block` of the chain
@@ -55,10 +60,14 @@ module Zincir
       end
     end
 
-    # Returns the hash of the `Block` with the given *nonce*
     def calculate_hash(nonce)
+      Block.calculate_hash nonce.to_s, @index.to_s, @timestamp.to_s, @data, @previous_hash
+    end
+
+    # Returns the hash of the `Block` with the given *nonce*
+    def self.calculate_hash(nonce : String, index : String, timestamp : String, data, previous_hash)
       hash = OpenSSL::Digest.new "SHA256"
-      hash.update nonce.to_s + @index.to_s + @timestamp.to_s + @data + @previous_hash
+      hash.update nonce + index + timestamp + data + previous_hash
       hash.hexdigest
     end
   end
