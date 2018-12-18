@@ -20,7 +20,7 @@ module Zincir
         network_last_block = network.last_block
         if blockchain.last.index < network_last_block.index
           download blockchain, network
-        else
+        elsif blockchain.last.index > network_last_block.index
           broadcast blockchain, network, network_last_block.index
         end
       end
