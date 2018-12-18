@@ -22,6 +22,8 @@ module Zincir
           download blockchain, network
         elsif blockchain.last.index > network_last_block.index
           broadcast blockchain, network, network_last_block.index
+        else
+          puts "Blockchain is in sync with the network"
         end
       end
 
