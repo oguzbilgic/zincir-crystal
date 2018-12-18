@@ -11,7 +11,7 @@
 - Use `~/.zincir` folder for configuration and blockchain cache
 - Add `/info` endpoint that returns node info such as client version
 
-# next
+# v0.4.0
 
 ## Node
 
