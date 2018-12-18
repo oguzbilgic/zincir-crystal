@@ -24,19 +24,19 @@ To build zincir, you will need [Crystal](https://crystal-lang.org/) and
   Building: zincird
 ```
 
-### Usage
+### Options
 
 ```shell
 > ./bin/zincird --help
   Usage: zincir [arguments]
-      -s IP, --seed-ip=IP              Specify ip for the seed node
-      -i IP, --host-ip=IP              Specify ip for the host node
-      -p PORT, --port=PORT             Start public server for other nodes to connect
-      -l, --local-net                  Prevents initial seed node connections
-      -w, --web                        Enable web server
+      -s IP, --seed-ip=IP              First node to connect, TestNet by default
+      -i IP, --host-ip=IP              Node's public ip, If the node is public
+      -p PORT, --port=PORT             Node's public port, If the node is public
+      -l, --local-net                  Prevents node from connecting to public nodes
+      -w, --web                        Start web server without making the node public
       -m, --mine                       Enable mining
       -h, --help                       Show this help
-      -v, --version                    Show version
+      -v, --version                    Show node version
 ```
 
 ### Start
