@@ -43,7 +43,7 @@ describe Zincir::Difficulty do
     end
   end
 
-  describe ".multipily" do
+  describe ".multiply" do
     cases = [
       {"f", 2.0, "7fff"},
       {"ff", 2.0, "7fff"},
@@ -54,6 +54,10 @@ describe Zincir::Difficulty do
       {"0ff", 2.0, "07fff"},
       {"0fff", 2.0, "07fff"},
       {"0ffff", 2.0, "07fff"},
+
+      {"1", 1, "1fff"},
+      {"f", 1, "ffff"},
+      {"0", 1, "0ffff"},
 
       {"7", 2.0, "3fff"},
       {"10", 2.0, "087f"},
@@ -67,10 +71,17 @@ describe Zincir::Difficulty do
       {"0005", 1, "0005fff"},
       {"0005", 8, "0000bff"},
       {"0005", 16, "00005ff"},
+      {"0005", 16.0, "00005ff"},
+      {"0005", 16.00, "00005ff"},
+      {"0005", 16.000, "00005ff"},
+      {"0005", 16.0000, "00005ff"},
+
+      {"09", 0.6, "10aa"},
+      {"000000908", 0.562351072279587, "000001010"},
     ]
 
     cases.each do |c|
-      Zincir::Difficulty.multipily_hex_difficulty(c[0], c[1]).should eq(c[2])
+      Zincir::Difficulty.multiply(c[0], c[1]).should eq(c[2])
     end
   end
 end

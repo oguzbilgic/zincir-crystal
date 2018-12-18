@@ -33,7 +33,7 @@ module Zincir
     def self.valid?(difficulty)
     end
 
-    private def self.multiply(difficulty, multiplier)
+    def self.multiply(difficulty, multiplier)
       zero_count = 0
       difficulty.chars.each do |char|
         break unless char == '0'
@@ -42,6 +42,12 @@ module Zincir
 
       decimal = hex_to_dec difficulty
       product = decimal / multiplier
+
+      while product > (16 ** PRECISION)
+        product /= 16
+        zero_count -= 1
+      end
+
       hex_product = dec_to_hex product.to_i
 
       ("0" * zero_count) + hex_product
@@ -49,7 +55,7 @@ module Zincir
 
     # Converts hext to decimal ignoring leading 0s
     # Adds trailing f as necessary to match the precision
-    private def self.hex_to_dec(hex)
+    def self.hex_to_dec(hex)
       while hex.starts_with? "0"
         hex = hex[1..-1]
       end
@@ -65,7 +71,7 @@ module Zincir
       hex.to_i 16
     end
 
-    private def self.dec_to_hex(dec)
+    def self.dec_to_hex(dec)
       while dec > (16 ** PRECISION)
         dec /= 16
       end
