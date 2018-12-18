@@ -1,8 +1,6 @@
 module Zincir
   module Miner
     # Starts mining the blockchain
-    #
-    # TODO: If block is solved in the meantime move onto the next block immediately
     def self.start!(blockchain)
       new_block_channel = Channel(Bool).new
 

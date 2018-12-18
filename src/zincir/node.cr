@@ -3,11 +3,7 @@ module Zincir
     private class Message
       JSON.mapping(ip: String?, block: Block?)
 
-      def initialize(@ip)
-      end
-
-      def initialize(@block : Block)
-      end
+      def initialize(@ip : String? = nil, @block : Block? = nil) end
     end
 
     include Emitter(Block -> Void)
@@ -56,13 +52,13 @@ module Zincir
     end
 
     def broadcast_block(block)
-      message = Message.new block
+      message = Message.new block: block
 
       @socket.send message.to_json
     end
 
     def broadcast_host_ip(ip)
-      message = Message.new ip
+      message = Message.new ip: ip
 
       @socket.send message.to_json
     end
