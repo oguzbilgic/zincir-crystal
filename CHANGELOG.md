@@ -1,14 +1,16 @@
 # backlog
 
-- [ ] Rebroadcast the received block if its coming from a private node
-- [ ] BUG: Remove disconnected nodes from the Network
-- [ ] Add CLI option to override blocks directory
-- [ ] Add `-d` `--daemon` CLI option
-- [ ] Log to a file if It's started as a daemon
-- [ ] Save know node ips to file system for future use
-- [ ] Add `Core` module for `Block`, `Blockchain` and `Difficulty`
-- [ ] Add `Network` for `Network`, `Node`, `Web`
-- [ ] Use `~/.zincir` folder for configuration and blockchain cache
+- Rebroadcast the received block if its coming from a private node
+- If seed node is lower, broadcast our blocks ?
+- BUG: Remove disconnected nodes from the Network
+- Add CLI option to override blocks directory
+- Add `-d` `--daemon` CLI option
+- Log to a file if It's started as a daemon
+- Save know node ips to file system for future use
+- Add `Core` module for `Block`, `Blockchain` and `Difficulty`
+- Add `Network` for `Network`, `Node`, `Web`
+- Use `~/.zincir` folder for configuration and blockchain cache
+- Add `/info` endpoint that returns node info such as client version
 
 # next
 
@@ -20,7 +22,8 @@
 
 ## Code
 
-- Add `Block.calculate_hash`
+- Add `Block.calculate_hash`, `{Network, Node}#last_block`
+- Rename `{Network, Node}#download_block` to `{Network, Node}#block_at`
 
 # v0.3.1
 

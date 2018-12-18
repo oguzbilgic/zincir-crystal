@@ -73,7 +73,13 @@ module Zincir
       Array(String).from_json response.body
     end
 
-    def download_block(index)
+    def last_block
+      response = HTTP::Client.get "http://#{@ip}/blocks"
+
+      Block.from_json response.body
+    end
+
+    def block_at(index)
       response = HTTP::Client.get "http://#{@ip}/blocks/#{index}"
 
       Block.from_json response.body

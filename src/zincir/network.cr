@@ -61,8 +61,12 @@ module Zincir
       end
     end
 
-    def download_block(index)
-      @nodes.sample.download_block index
+    def last_block
+      public_nodes.sample.last_block
+    end
+
+    def block_at(index)
+      public_nodes.sample.block_at index
     end
 
     private def explore_nodes!
