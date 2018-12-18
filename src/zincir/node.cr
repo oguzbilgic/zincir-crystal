@@ -37,6 +37,12 @@ module Zincir
       end
     end
 
+    def on_close(&block)
+      @socket.on_close do
+        block.call
+      end
+    end
+
     # Returns true if the `Node` is publicly accessible via it's `#ip`
     def public?
       @ip != nil

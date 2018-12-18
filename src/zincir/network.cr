@@ -36,6 +36,11 @@ module Zincir
         emit :block, block
       end
 
+      node.on_close do
+        puts "Connection is closed #{node.ip} #{@nodes.size}"
+        @nodes.delete node
+      end
+
       @nodes << node
       puts "New connection #{node} count: #{@nodes.size}"
     end

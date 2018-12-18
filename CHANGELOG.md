@@ -1,8 +1,6 @@
 # backlog
 
 - Rebroadcast the received block if its coming from a private node
-- If seed node is lower, broadcast our blocks ?
-- BUG: Remove disconnected nodes from the Network
 - Add CLI option to override blocks directory
 - Add `-d` `--daemon` CLI option
 - Log to a file if It's started as a daemon
@@ -17,6 +15,7 @@
 ## Node
 
 - Broadcast blocks to network if the local blockchain has higher index,
+- Remove the node from the network when it is closed
 - Fix a bug which caused some validations to be skipped if the chain is being reseted
 - Improve miner so that as soon as a new block is added by network, It moves on
   to the next index.
