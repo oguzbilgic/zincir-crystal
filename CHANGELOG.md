@@ -1,5 +1,6 @@
 # backlog
 
+- Keep a list of offline ips and try to connect them periodically
 - Rebroadcast the received block if its coming from a private node
 - Add CLI option to override blocks directory
 - Add `-d` `--daemon` CLI option
