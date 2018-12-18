@@ -12,10 +12,36 @@ module Zincir
           network.broadcast_block block if block.mined_by_us?
         end
 
+        if network.public_nodes.empty?
+          puts "Can't download or broadcast to network, no public nodes"
+          return
+        end
+
+        network_last_block = network.last_block
+        if blockchain.last.index < network_last_block.index
+          download blockchain, network
+        else
+          broadcast blockchain, network, network_last_block.index
+        end
+      end
+
+      private def broadcast(blockchain, network, from_index)
+        loop do
+          break if blockchain.last.index < from_index
+
+          block = blockchain.block_at from_index
+          network.broadcast_block block
+
+          puts "Broadcasting local #{block}"
+          from_index +=1
+        end
+      end
+
+      private def download(blockchain, network)
         go_back_index = nil
         loop do
           index = go_back_index || blockchain.last.index + 1
-          block = network.download_block index
+          block = network.block_at index
 
           blockchain.queue_block block
           go_back_index = nil
