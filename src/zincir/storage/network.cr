@@ -27,6 +27,7 @@ module Zincir
         end
       end
 
+      # TODO: Check if the block previous hash is same
       private def broadcast(blockchain, network, from_index)
         loop do
           break if blockchain.last.index < from_index
