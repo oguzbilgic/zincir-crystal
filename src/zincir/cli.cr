@@ -30,7 +30,7 @@ module Zincir
         end
 
         parser.on("-v", "--version", "Show version") do
-          puts "Zincir v#{VERSION}-crystal"
+          puts "zincir-crystal v#{VERSION}"
           exit 0
         end
       end

@@ -11,7 +11,7 @@
 - Add CLI option to override `~/.zincir` directory
 - Log to a file if It's started as a daemon
 
-## next
+## v0.4.1
 
 ## Node
 
@@ -27,7 +27,7 @@
 
 ## Node
 
-- Broadcast blocks to network if the local blockchain has higher index,
+- Broadcast blocks to network if the local blockchain has higher index
 - Remove the node from the network when it is closed
 - Fix a bug which caused some validations to be skipped if the chain is being reseted
 - Improve miner so that as soon as a new block is added by network, It moves on
