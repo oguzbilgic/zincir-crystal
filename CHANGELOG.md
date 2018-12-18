@@ -1,5 +1,7 @@
 # backlog
 
+- blockchain verification
+- [ ] Rebroadcast the received block if its coming from a private node
 - [ ] BUG: Remove disconnected nodes from the Network
 - [ ] Add CLI option to override blocks directory
 - [ ] Add `-d` `--daemon` CLI option
@@ -10,6 +12,11 @@
 - [ ] Use `~/.zincir` folder for configuration and blockchain cache
 
 # next
+
+## Node
+
+- Improve miner so that as soon as a new block is added by network, It moves on
+  to the next index.
 
 ## Code
 
