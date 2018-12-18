@@ -19,6 +19,10 @@
   difficulty while It was trying to reduce the difficulty
 - Fix Storage::Network bug which caused broadcasting existing block
 
+## Code
+
+- Add experimental `bench/` directory for benchmarking
+
 # v0.4.0
 
 ## Node
