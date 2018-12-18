@@ -52,6 +52,7 @@ module Zincir
     # Queues the *block* to be added to the blockchain
     def queue_block(block)
       @queued_blocks << block
+      puts "Queue #{block} #{@queued_blocks.size}"
 
       until @queued_blocks.empty?
         first_block = @queued_blocks.sort_by!(&.index).shift
