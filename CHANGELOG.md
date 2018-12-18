@@ -11,6 +11,13 @@
 - Use `~/.zincir` folder for configuration and blockchain cache
 - Add `/info` endpoint that returns node info such as client version
 
+## next
+
+## Node
+
+- Fix hex overflow bug in Difficulty.multiply which resulted in higher
+  difficulty while It was trying to reduce the difficulty
+
 # v0.4.0
 
 ## Node
