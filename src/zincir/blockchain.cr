@@ -92,9 +92,6 @@ module Zincir
 
         puts "Reseting chain with #{block}"
         @blocks = @blocks[0..block.index-1]
-        @blocks << block
-        emit :block, block
-        return
       end
 
       if block.previous_hash != last.hash
