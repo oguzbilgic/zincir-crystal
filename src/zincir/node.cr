@@ -15,7 +15,11 @@ module Zincir
       @socket = HTTP::WebSocket.new "http://#{ip}/blocks"
 
       listen
-      spawn @socket.run
+      spawn do
+        @socket.run
+      rescue e
+        "Node.socket error: #{e}"
+      end
     end
 
     # Creates a `Node` with the given *socket* connection
