@@ -1,17 +1,5 @@
-# backlog
 
-- Keep a list of offline ips and try to connect them periodically
-- Rebroadcast the received block if its coming from a private node
-- Add `-d` `--daemon` CLI option
-- Save know node ips to file system for future use
-- Add `/info` endpoint that returns node info such as client version
-- Add `Core` module for `Block`, `Blockchain` and `Difficulty`
-- Add `Network` for `Network`, `Node`, `Web`
-- Use `~/.zincir` folder for configuration and blockchain cache
-- Add CLI option to override `~/.zincir` directory
-- Log to a file if It's started as a daemon
-
-## v0.4.1
+# v0.4.1
 
 ## Node
 
