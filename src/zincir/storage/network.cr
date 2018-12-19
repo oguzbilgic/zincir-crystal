@@ -44,13 +44,15 @@ module Zincir
         go_back_index = nil
         loop do
           index = go_back_index || blockchain.last.index + 1
+          # puts "Fetching index: #{index}"
           block = network.block_at index
 
-          blockchain.queue_block block
           go_back_index = nil
+          blockchain.queue_block block
         rescue Blockchain::BlockOnForkChain
           puts "Forked chain block #{block}"
-          go_back_index = go_back_index ? go_back_index -1 : index.not_nil! - 2
+          go_back_index = index.not_nil! - 1
+          # puts "Go back to #{go_back_index}"
         rescue Blockchain::BlockNotPreferred
           network.broadcast_block blockchain.block_at index.not_nil!
           puts "Received block is disregarded #{block}"
