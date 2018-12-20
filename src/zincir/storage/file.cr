@@ -8,16 +8,29 @@ module Zincir
           ::File.write ".blocks/#{block.hash}", block.to_json
         end
 
-        Dir.open(".blocks/").each_child do |filename|
+        blocks = Dir.open(".blocks/").children.map do |filename|
           file = ::File.read ".blocks/#{filename}"
-          block = Block.from_json file
-          blockchain.queue_block block
-        rescue Blockchain::BlockNotAdded
-          ::File.delete ".blocks/#{block.hash}"
-          puts "Filesystem block is disregarded, deleting file.."
-          next
+          Block.from_json file
         end
 
+        block_size = blocks.size
+        blocks = blocks.sort_by!(&.index)
+
+        loop do
+          break if blocks.empty?
+
+          block = blocks.shift
+
+          blockchain.queue_block block
+        rescue Blockchain::BlockNotPreferred
+          # TODO: delete the file
+          puts "Notpreferred #{block}"
+        rescue Blockchain::BlockOnForkChain
+          # TODO: delete the file
+          puts "BlockOnForkChain #{block}"
+        end
+
+        puts "#{block_size} blocks are read from the file system"
         puts "Finished reading the chain from file system"
       end
     end
