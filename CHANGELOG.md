@@ -1,14 +1,15 @@
-# next
+# v0.5.0
 
 ## Node
 
-- Make `Storage::File` more reliable
-- Fix a bug in `Storage::Network`
+- Relay network blocks If they haven't been seen before
+- Fix bugs in `Storage::File` and `Storage::Network`
 - Update CLI options' descriptions
 
 ## Code
 
 - Add `Storage::Network.check_sync_status`
+- Add `Storage::Network.find_mutual_block`
 
 # v0.4.1
 

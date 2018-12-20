@@ -4,7 +4,6 @@
 
 - Bug: if the block has the same timestamp, each chain picks own block,
   which causes chains to be partitioned.
-- Rebroadcast the received block if its coming from a private node
 - Add `/info` endpoint that returns node info such as client version or blockchain
   information
 - Add ability to request multiple blocks via `/blocks/` endpoint. Either with
@@ -12,8 +11,6 @@
 
 ## Node
 
-- Bug: Before broadcasting better chain in `Network.broadcast` make sure the
-  previous hashes match, if not traverse backwards until the common block
 - If block is already received or in the queue disregard
 - Save know node ips to file system for future use
 - Keep a list of offline ips and try to connect them periodically
