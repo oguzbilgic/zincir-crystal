@@ -16,11 +16,6 @@ module Zincir
       @blocks[index]
     end
 
-    # Returns the index of the expected `Block`
-    def next_index
-      last.index + 1
-    end
-
     # Queues the *block* to be added to the blockchain
     def queue_block(block)
       @queued_blocks << block

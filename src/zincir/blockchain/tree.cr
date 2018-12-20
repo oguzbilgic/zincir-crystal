@@ -33,11 +33,6 @@ module Zincir
       end
     end
 
-    # Returns the index of the expected `Block`
-    def next_index
-      last.index + 1
-    end
-
     # Queues the *block* to be added to the blockchain
     def queue_block(block)
       return if @chains[block.hash]?

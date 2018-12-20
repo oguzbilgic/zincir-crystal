@@ -22,12 +22,17 @@ module Zincir
     # Returns the `Block` at *index*
     abstract def block_at(index)
 
-    # Returns the index of the expected `Block`
-    abstract def next_index
+    # Queues the *block* to be added to the blockchain
+    abstract def queue_block(block)
 
     # Returns the required difficulty for the next `Block`
     def next_difficulty
       next_difficulty_at last
+    end
+
+    # Returns the index of the expected `Block`
+    def next_index
+      last.index + 1
     end
 
     # Returns the required difficulty for the next `Block`
@@ -42,9 +47,6 @@ module Zincir
 
       Difficulty.calculate block.difficulty, duration, desired_duration
     end
-
-    # Queues the *block* to be added to the blockchain
-    abstract def queue_block(block)
 
     private def block_added(block)
       if block.mined_by_us?
