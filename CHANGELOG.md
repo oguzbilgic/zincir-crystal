@@ -1,3 +1,14 @@
+# next
+
+## Node
+
+- Make `Storage::File` more reliable
+- Fix a bug in `Storage::Network`
+- Update CLI options' descriptions
+
+## Code
+
+- Add `Storage::Network.check_sync_status`
 
 # v0.4.1
 

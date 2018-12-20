@@ -14,6 +14,7 @@
 
 - Bug: Before broadcasting better chain in `Network.broadcast` make sure the
   previous hashes match, if not traverse backwards until the common block
+- If block is already received or in the queue disregard
 - Save know node ips to file system for future use
 - Keep a list of offline ips and try to connect them periodically
 - Add `-d` `--daemon` CLI option

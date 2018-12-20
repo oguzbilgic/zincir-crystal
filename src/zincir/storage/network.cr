@@ -21,10 +21,10 @@ module Zincir
         if blockchain.last.index < network_last_block.index
           download blockchain, network
         elsif blockchain.last.index > network_last_block.index
-          broadcast blockchain, network, network_last_block.index + 1
-        else
-          puts "Blockchain is in sync with the network"
+          broadcast blockchain, network, network_last_block
         end
+
+        check_sync_status blockchain, network
       end
 
       # TODO: Check if the block previous hash is same
@@ -63,6 +63,15 @@ module Zincir
         end
 
         puts "Finished downloading the chain from the network"
+      end
+
+      def check_sync_status(blockchain, network)
+        puts "Checking network sync status"
+        last_network = network.last_block
+        our_block = blockchain.last_block
+
+        raise "Not in sync" if last_network.hash != our_block.hash
+        puts "Blockchain is in sync with the network"
       end
     end
   end
