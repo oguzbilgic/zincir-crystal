@@ -68,7 +68,7 @@ module Zincir
       def check_sync_status(blockchain, network)
         puts "Checking network sync status"
         last_network = network.last_block
-        our_block = blockchain.last_block
+        our_block = blockchain.last
 
         raise "Not in sync" if last_network.hash != our_block.hash
         puts "Blockchain is in sync with the network"
