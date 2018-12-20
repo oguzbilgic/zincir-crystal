@@ -64,6 +64,10 @@ module Zincir
       Block.calculate_hash nonce.to_s, @index.to_s, @timestamp.to_s, @data, @previous_hash
     end
 
+    def >(b)
+      index > b.index
+    end
+
     # Returns the hash of the `Block` with the given *nonce*
     def self.calculate_hash(nonce : String, index : String, timestamp : String, data, previous_hash)
       hash = OpenSSL::Digest.new "SHA256"
