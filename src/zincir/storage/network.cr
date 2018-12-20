@@ -17,48 +17,63 @@ module Zincir
           return
         end
 
-        network_last_block = network.last_block
-        if blockchain.last.index < network_last_block.index
-          download blockchain, network
-        elsif blockchain.last.index > network_last_block.index
-          broadcast blockchain, network, network_last_block
+        blockchain_last = blockchain.last
+        network_last = network.last_block
+
+        if blockchain_last.hash != network_last.hash
+          puts "Doesn't have same last block"
+          lowest = Math.min blockchain_last.index, network_last.index
+          mutual_block = find_mutual_block blockchain, network, lowest
+
+          if blockchain_last.index > network_last.index
+            broadcast blockchain, network, mutual_block.index + 1
+          elsif blockchain_last.index <= network_last.index
+            download blockchain, network, mutual_block.index
+          end
         end
 
         check_sync_status blockchain, network
       end
 
-      # TODO: Check if the block previous hash is same
-      private def broadcast(blockchain, network, from_index)
+      def find_mutual_block(blockchain, network, lowest)
         loop do
-          break if blockchain.last.index < from_index
+          our_block = blockchain.block_at lowest
+          net_block = network.block_at lowest
 
-          block = blockchain.block_at from_index
-          network.broadcast_block block
+          return our_block if our_block.hash == net_block.hash
 
-          puts "Broadcasting local #{block}"
-          from_index +=1
+          lowest -= 1
         end
       end
 
-      private def download(blockchain, network)
-        go_back_index = nil
+      private def broadcast(blockchain, network, starting_from_index)
+        puts "Broadcasting chain staring from #{starting_from_index}"
         loop do
-          index = go_back_index || blockchain.last.index + 1
-          # puts "Fetching index: #{index}"
-          block = network.block_at index
+          break if blockchain.last.index < starting_from_index
 
-          go_back_index = nil
+          block = blockchain.block_at starting_from_index
+          network.broadcast_block block
+
+          puts "Broadcasting local #{block}"
+          starting_from_index +=1
+        end
+      end
+
+      private def download(blockchain, network, ending_index)
+        index = network.last_block.index
+        loop do
+          break if ending_index > index
+          # puts "Fetching index: #{index}"
+          block = network.block_at ending_index
+
           blockchain.queue_block block
+          ending_index +=1
         rescue Blockchain::BlockOnForkChain
-          puts "Forked chain block #{block}"
-          go_back_index = index.not_nil! - 1
-          # puts "Go back to #{go_back_index}"
+          puts "BlockOnForkChain #{block}"
+          next
         rescue Blockchain::BlockNotPreferred
-          network.broadcast_block blockchain.block_at index.not_nil!
-          puts "Received block is disregarded #{block}"
-          puts "Broadcasting the preffered block to network"
-          break
-        rescue
+          puts "BlockNotPreferred #{block}"
+          broadcast blockchain, network, block.not_nil!.index
           break
         end
 
@@ -66,7 +81,8 @@ module Zincir
       end
 
       def check_sync_status(blockchain, network)
-        puts "Checking network sync status"
+        puts "Checking network sync status..."
+        sleep 5
         last_network = network.last_block
         our_block = blockchain.last
 
