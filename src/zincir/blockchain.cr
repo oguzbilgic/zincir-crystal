@@ -16,10 +16,6 @@ module Zincir
 
     include Emitter(Block -> Void)
 
-    def initialize
-      TreeBlockchain.new
-    end
-
     # Returns the last `Block` in the blockchain
     abstract def last
 
@@ -56,7 +52,7 @@ module Zincir
       else
         puts "Added".colorize(:blue).to_s + " #{block}"
       end
-      
+
       emit :block, block
     end
   end
