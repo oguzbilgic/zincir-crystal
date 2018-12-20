@@ -4,12 +4,23 @@ module Zincir
       extend self
 
       def load_and_sync(blockchain, network)
+        received_block_hashes = [] of String
+
         network.on :block do |block|
           blockchain.queue_block block
+
+          next if received_block_hashes.includes? block.hash
+
+          received_block_hashes << block.hash
+          network.broadcast_block block
+        rescue e
+          puts "Network error: #{e}"
         end
 
         blockchain.on :block do |block|
-          network.broadcast_block block if block.mined_by_us?
+          next if received_block_hashes.includes? block.hash
+
+          network.broadcast_block block
         end
 
         if network.public_nodes.empty?
