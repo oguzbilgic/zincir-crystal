@@ -71,8 +71,10 @@ module Zincir
       end
 
       private def download(blockchain, network, ending_index)
+        puts "Downloading blockchain"
         index = network.last_block.index
         loop do
+          puts "Fetching block at #{ending_index}"
           break if ending_index > index
           # puts "Fetching index: #{index}"
           block = network.block_at ending_index
