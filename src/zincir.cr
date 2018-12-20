@@ -5,6 +5,7 @@ require "kemal"
 
 require "./zincir/emitter"
 require "./zincir/*"
+require "./zincir/blockchain/*"
 require "./zincir/storage/*"
 
 module Zincir

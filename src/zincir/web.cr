@@ -18,6 +18,10 @@ module Zincir
         blockchain.last.to_json
       end
 
+      get "/tips" do
+        blockchain.try &.tips.to_json
+      end
+
       get "/blocks/:index" do |env|
         index = env.params.url["index"].to_i
 
