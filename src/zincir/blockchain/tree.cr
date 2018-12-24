@@ -6,7 +6,6 @@ module Zincir
     private class Chain
       property parent : Chain? = nil
       property branch : UUID
-      getter block
 
       JSON.mapping(
         branch: {type: UUID, setter: false},
@@ -25,7 +24,8 @@ module Zincir
     def initialize
       @orphans = [] of Block
       @genesis = Chain.new Block.first, UUID.random
-      @chains = {@genesis.block.hash => @genesis} of String => Chain
+      @chains_by_hash = {@genesis.block.hash => @genesis} of String => Chain
+      @chains_by_index = {0 => [@genesis]}
       @tips = [@genesis]
     end
 
@@ -35,18 +35,19 @@ module Zincir
     end
 
     # Returns the `Block` at *index*
-    def block_at(index) : Block
+    def block_at(index)
       parent = heighest_chain
 
-      loop do
-        return parent.not_nil!.block if parent.not_nil!.block.index == index
-        parent = parent.not_nil!.parent
+      chain = @chains_by_index[index].find do |chain|
+        chain.branch == parent.branch
       end
+
+      chain.not_nil!.block
     end
 
     # Queues the *block* to be added to the blockchain
     def queue_block(block : Block)
-      return if @chains[block.hash]?
+      return if @chains_by_hash[block.hash]?
 
       add_chain block
     end
@@ -75,7 +76,7 @@ module Zincir
         raise BlockNotAdded.new "Invalid block at index #{block.index}"
       end
 
-      parent = @chains[block.previous_hash]?
+      parent = @chains_by_hash[block.previous_hash]?
 
       if parent
         if !parent.parent && parent != @genesis
@@ -110,7 +111,12 @@ module Zincir
 
         check_orphans block
 
-        @chains[chain.block.hash] = chain
+        @chains_by_hash[chain.block.hash] = chain
+        if @chains_by_index[block.index]?
+          @chains_by_index[block.index] << chain
+        else
+          @chains_by_index[block.index] = [chain]
+        end
       else
         puts "Orphan #{block}"
         @orphans << block
