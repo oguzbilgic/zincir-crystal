@@ -1,19 +1,30 @@
+require "uuid"
+require "uuid/json"
+
 module Zincir
   class Blockchain::Tree < Blockchain
     private class Chain
       property parent : Chain? = nil
+      property branch : UUID
       getter block
 
-      forward_missing_to @block
+      JSON.mapping(
+        branch: {type: UUID, setter: false},
+        block: {type: Block, setter: false},
+      )
 
-      def initialize(@block : Block)
+      def initialize(@block : Block, @branch : UUID)
+      end
+
+      def >(chain)
+        @block > chain.block
       end
     end
 
     # Creates a blockchain with the first block
     def initialize
-      @orphans = [] of Chain
-      @genesis = Chain.new Block.first
+      @orphans = [] of Block
+      @genesis = Chain.new Block.first, UUID.random
       @chains = {@genesis.block.hash => @genesis} of String => Chain
       @tips = [@genesis]
     end
@@ -24,20 +35,20 @@ module Zincir
     end
 
     # Returns the `Block` at *index*
-    def block_at(index)
+    def block_at(index) : Block
       parent = heighest_chain
 
       loop do
-        return parent.not_nil!.block if parent.not_nil!.index == index
+        return parent.not_nil!.block if parent.not_nil!.block.index == index
         parent = parent.not_nil!.parent
       end
     end
 
     # Queues the *block* to be added to the blockchain
-    def queue_block(block)
+    def queue_block(block : Block)
       return if @chains[block.hash]?
 
-      add_chain Chain.new block
+      add_chain block
     end
 
     private def heighest_chain
@@ -45,61 +56,65 @@ module Zincir
     end
 
     def tips
-      @tips.map &.block
+      @tips
     end
 
-    private def check_orphans(parent)
+    private def check_orphans(parent : Block)
       orphans = @orphans.select do |orphan|
         orphan.previous_hash == parent.hash
       end
 
-      @orphans = @orphans - [orphans]
       orphans.each do |orphan|
+        @orphans.delete orphan
         add_chain orphan
       end
     end
 
-    private def add_chain(chain)
-      unless chain.valid?
-        raise BlockNotAdded.new "Invalid block at index #{chain.index}"
+    private def add_chain(block : Block)
+      unless block.valid?
+        raise BlockNotAdded.new "Invalid block at index #{block.index}"
       end
 
-      parent = @chains[chain.previous_hash]?
+      parent = @chains[block.previous_hash]?
 
       if parent
-        if !parent.parent && parent.index != 0
-          puts "Orphan Parent #{chain.block}"
-          @orphans << chain
+        if !parent.parent && parent != @genesis
+          puts "Orphan Parent #{block}"
+          @orphans << block
           return
         end
 
-        if parent.index + 1 != chain.index
-          raise BlockNotAdded.new "Index is wrong #{chain.block}"
+        if parent.block.index + 1 != block.index
+          raise BlockNotAdded.new "Index is wrong #{block}"
         end
 
-        if parent.timestamp > chain.timestamp
-          raise BlockNotAdded.new "Time is wrong #{chain.block}"
+        if parent.block.timestamp > block.timestamp
+          raise BlockNotAdded.new "Time is wrong #{block}"
         end
 
-        if chain.difficulty != next_difficulty_at parent
-          raise BlockNotAdded.new "Difficulty is wrong #{chain.block}"
+        if block.difficulty != next_difficulty_at parent.block
+          raise BlockNotAdded.new "Difficulty is wrong #{block}"
         end
 
-        chain.parent = parent
         if @tips.includes? parent
+          chain = Chain.new block, parent.branch
+          chain.parent = parent
           @tips.delete parent
+        else
+          chain = Chain.new block, UUID.random
+          chain.parent = parent
         end
 
         @tips << chain
-        block_added chain.block
+        block_added block
 
-        check_orphans chain
+        check_orphans block
+
+        @chains[chain.block.hash] = chain
       else
-        puts "Orphan #{chain.block}"
-        @orphans << chain
+        puts "Orphan #{block}"
+        @orphans << block
       end
-
-      @chains[chain.block.hash] = chain
     end
   end
 end
