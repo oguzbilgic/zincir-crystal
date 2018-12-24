@@ -5,14 +5,13 @@ module Zincir
   class Blockchain::Tree < Blockchain
     private class Chain
       property parent : Chain? = nil
-      property branch : UUID
 
       JSON.mapping(
-        branch: {type: UUID, setter: false},
+        branches: {type: ::Array(UUID), setter: false},
         block: {type: Block, setter: false},
       )
 
-      def initialize(@block : Block, @branch : UUID)
+      def initialize(@block : Block, @branches)
       end
 
       def >(chain)
@@ -23,7 +22,7 @@ module Zincir
     # Creates a blockchain with the first block
     def initialize
       @orphans = [] of Block
-      @genesis = Chain.new Block.first, UUID.random
+      @genesis = Chain.new Block.first, [UUID.random]
       @chains_by_hash = {@genesis.block.hash => @genesis} of String => Chain
       @chains_by_index = {0 => [@genesis]}
       @tips = [@genesis]
@@ -39,7 +38,7 @@ module Zincir
       parent = heighest_chain
 
       chain = @chains_by_index[index].find do |chain|
-        chain.branch == parent.branch
+        (chain.branches - parent.branches).empty?
       end
 
       chain.not_nil!.block
@@ -98,11 +97,11 @@ module Zincir
         end
 
         if @tips.includes? parent
-          chain = Chain.new block, parent.branch
+          chain = Chain.new block, parent.branches
           chain.parent = parent
           @tips.delete parent
         else
-          chain = Chain.new block, UUID.random
+          chain = Chain.new block, parent.branches + [UUID.random]
           chain.parent = parent
         end
 
