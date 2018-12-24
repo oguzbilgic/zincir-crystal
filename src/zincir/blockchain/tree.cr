@@ -67,6 +67,12 @@ module Zincir
       parent = @chains[chain.previous_hash]?
 
       if parent
+        if !parent.parent && parent.index != 0
+          puts "Orphan Parent #{chain.block}"
+          @orphans << chain
+          return
+        end
+
         if parent.index + 1 != chain.index
           raise BlockNotAdded.new "Index is wrong #{chain.block}"
         end
