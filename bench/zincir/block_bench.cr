@@ -1,5 +1,5 @@
 require "benchmark"
-require "../src/zincir"
+require "../../src/zincir"
 
 Benchmark.ips do |x|
   genesis = Zincir::Block.first
