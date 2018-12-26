@@ -123,7 +123,7 @@ module Zincir
           @chains_by_index[block.index] = [chain]
         end
       else
-        raise "Orphan #{block}"
+        puts "Orphan #{block}"
         @orphans << block
       end
     end
