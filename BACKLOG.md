@@ -2,12 +2,8 @@
 
 ## Protocol
 
-- Bug: if the block has the same timestamp, each chain picks own block,
-  which causes chains to be partitioned.
 - Add `/info` endpoint that returns node info such as client version or blockchain
   information
-- Add ability to request multiple blocks via `/blocks/` endpoint. Either with
-  a range `/blocks/0..15` or an array `/blocks/3,78,12`
 
 ## Node
 
