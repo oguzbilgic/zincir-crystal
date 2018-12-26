@@ -25,6 +25,16 @@ module Zincir
     # Queues the *block* to be added to the blockchain
     abstract def queue_block(block)
 
+    def blocks_at(indexes : Enumerable(Int32))
+      indexes = indexes.select do |index| 
+        index <= last.index
+      end
+
+      indexes.map do |index|
+        block_at index
+      end
+    end
+
     # Returns the required difficulty for the next `Block`
     def next_difficulty
       next_difficulty_at last

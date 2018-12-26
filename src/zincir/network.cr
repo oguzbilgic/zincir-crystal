@@ -74,6 +74,10 @@ module Zincir
       public_nodes.sample.block_at index
     end
 
+    def blocks_at(indexes)
+      public_nodes.sample.blocks_at indexes
+    end
+
     private def explore_nodes!
       loop do
         all_ips = public_nodes.map(&.known_ips).flatten

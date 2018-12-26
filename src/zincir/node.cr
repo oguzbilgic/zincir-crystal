@@ -90,5 +90,13 @@ module Zincir
 
       Block.from_json response.body
     end
+
+    def blocks_at(indexes : Range | Array(Int32))
+      indexes = indexes.is_a?(Range) ? indexes.to_s : indexes.join ','
+
+      response = HTTP::Client.get "http://#{@ip}/blocks/#{indexes}"
+
+      Array(Block).from_json response.body
+    end
   end
 end
