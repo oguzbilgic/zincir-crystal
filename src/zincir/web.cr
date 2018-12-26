@@ -36,7 +36,7 @@ module Zincir
 
           blockchain.blocks_at(range).to_json
         else
-          blockchain.block_at(input).to_json
+          blockchain.block_at(input.to_i).to_json
         end
       end
 
