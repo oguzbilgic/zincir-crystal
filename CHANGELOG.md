@@ -1,3 +1,8 @@
+# v0.6.0
+
+## Code
+- Add `Blockchain::Tree` implementation replacing the array implementation
+
 # v0.5.0
 
 ## Node
