@@ -35,13 +35,13 @@ module Zincir
 
     # Returns the `Block` at *index*
     def block_at(index)
-      parent = heighest_chain
+      chains = @chains_by_index[index].map do |chain|
+        count = (chain.branches & highest_chain.branches).size
 
-      chain = @chains_by_index[index].find do |chain|
-        (chain.branches - parent.branches).empty?
+        {chain: chain, count: count}
       end
 
-      chain.not_nil!.block
+      chains.sort_by(&.["count"]).first["chain"].block
     end
 
     # Queues the *block* to be added to the blockchain
@@ -117,7 +117,7 @@ module Zincir
           @chains_by_index[block.index] = [chain]
         end
       else
-        puts "Orphan #{block}"
+        raise "Orphan #{block}"
         @orphans << block
       end
     end
