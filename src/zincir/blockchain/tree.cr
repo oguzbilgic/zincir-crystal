@@ -30,11 +30,13 @@ module Zincir
 
     # Returns the last `Block` in the blockchain
     def last
-      heighest_chain.not_nil!.block
+      highest_chain.not_nil!.block
     end
 
     # Returns the `Block` at *index*
     def block_at(index)
+      parent = highest_chain
+
       chains = @chains_by_index[index].map do |chain|
         count = (chain.branches & highest_chain.branches).size
 
@@ -51,7 +53,7 @@ module Zincir
       add_chain block
     end
 
-    private def heighest_chain
+    private def highest_chain
       @tips.max
     end
 
