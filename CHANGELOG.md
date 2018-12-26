@@ -1,5 +1,8 @@
 # next
 
+## Node
+- Make `/blocks/` endpoint handle index range and array
+
 ## Code
 - Add `{Blockchain, Network, Node}#blocks_at`
 

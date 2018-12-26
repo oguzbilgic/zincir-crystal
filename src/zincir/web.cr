@@ -22,10 +22,22 @@ module Zincir
         blockchain.try &.tips.to_json
       end
 
-      get "/blocks/:index" do |env|
-        index = env.params.url["index"].to_i
+      # NOTE: Is there a more idiomatic way to check these 3 cases?
+      get "/blocks/:input" do |env|
+        input = env.params.url["input"]
 
-        blockchain.block_at(index).to_json
+        if input.includes? ','
+          indexes = input.split(',').map(&.to_i).uniq
+
+          blockchain.blocks_at(indexes).to_json
+        elsif input.includes? ".."
+          ranges = input.split ".."
+          range = ranges.first.to_i..ranges.last.to_i
+
+          blockchain.blocks_at(range).to_json
+        else
+          blockchain.block_at(input).to_json
+        end
       end
 
       ws "/blocks" do |socket, env|
