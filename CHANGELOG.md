@@ -1,4 +1,4 @@
-# next
+# v0.7.0
 
 ## Node
 - Make `/blocks/` endpoint handle index range and array
