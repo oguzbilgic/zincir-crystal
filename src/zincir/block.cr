@@ -22,7 +22,7 @@ module Zincir
       @mined_by_us = true
       if nonce
         @nonce = nonce
-        @hash  = calculate_hash @nonce
+        @hash = calculate_hash @nonce
       else
         @nonce, @hash = solve_block @difficulty
       end

@@ -3,7 +3,7 @@ require "../../src/zincir"
 
 Benchmark.ips do |x|
   genesis = Zincir::Block.first
-  
+
   # x.report("Block.next f") {
   #   Zincir::Block.next genesis, "f", "Data #{rand}"
   # }

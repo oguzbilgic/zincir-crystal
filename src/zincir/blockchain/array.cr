@@ -59,7 +59,7 @@ module Zincir
         end
 
         puts "Reseting chain with #{block}"
-        @blocks = @blocks[0..block.index-1]
+        @blocks = @blocks[0..block.index - 1]
       end
 
       if block.previous_hash != last.hash

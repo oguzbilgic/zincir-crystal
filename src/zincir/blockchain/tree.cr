@@ -36,13 +36,13 @@ module Zincir
     # Returns the `Block` at *index*
     #
     # NOTE: This finds the correct block comparing the branch property of
-    # the tip block and the blocks at the given index. There might be a 
+    # the tip block and the blocks at the given index. There might be a
     # easier way to find the block
     def block_at(index)
       chains = @chains_by_index[index].map do |chain|
         intersection = (chain.branches & highest_chain.branches)
         difference = (highest_chain.branches + chain.branches - intersection).uniq
-        count = intersection.size-difference.size
+        count = intersection.size - difference.size
 
         {chain: chain, count: count}
       end

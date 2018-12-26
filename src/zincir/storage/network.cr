@@ -66,18 +66,18 @@ module Zincir
           network.broadcast_block block
 
           puts "Broadcasting local #{block}"
-          starting_from_index +=1
+          starting_from_index += 1
         end
       end
 
       private def download(blockchain, network, starting_index)
         ending_index = network.last_block.index
-        indexes = (starting_index+1..ending_index)
+        indexes = (starting_index + 1..ending_index)
 
         indexes.each_slice 1000 do |slice|
           range = slice.first..slice.last
           puts "Downloading blocks: #{range}"
-          blocks = network.blocks_at slice.first..slice.last+1
+          blocks = network.blocks_at slice.first..slice.last + 1
 
           blocks.each do |block|
             blockchain.queue_block block

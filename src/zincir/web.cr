@@ -1,7 +1,7 @@
 module Zincir
   module Web
     DEFAULT_PORT = 9147
-    DEFAULT_IP = "localhost"
+    DEFAULT_IP   = "localhost"
 
     def self.start!(network, blockchain, port = nil, ip = nil)
       logging false

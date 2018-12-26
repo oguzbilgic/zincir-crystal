@@ -12,7 +12,7 @@ module Zincir
 
     # Returs true if the given *hash* satisfies the given *difficulty*
     def self.satisfies?(hash, difficulty)
-      hash_difficulty = hash[0..difficulty.size-1].to_i64(16)
+      hash_difficulty = hash[0..difficulty.size - 1].to_i64(16)
       hash_difficulty <= difficulty.to_i64(16)
     end
 

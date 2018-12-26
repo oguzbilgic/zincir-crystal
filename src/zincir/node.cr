@@ -3,7 +3,8 @@ module Zincir
     private class Message
       JSON.mapping(ip: String?, block: Block?)
 
-      def initialize(@ip : String? = nil, @block : Block? = nil) end
+      def initialize(@ip : String? = nil, @block : Block? = nil)
+      end
     end
 
     include Emitter(Block -> Void)

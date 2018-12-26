@@ -4,15 +4,22 @@ require "./block"
 
 module Zincir
   abstract class Blockchain
-    class BlockNotAdded < ::Exception end
-    class BlockIndexTooHigh < BlockNotAdded end
-    class BlockNotPreferred < BlockNotAdded end
-    class BlockOnForkChain  < BlockNotAdded end
+    class BlockNotAdded < ::Exception
+    end
+
+    class BlockIndexTooHigh < BlockNotAdded
+    end
+
+    class BlockNotPreferred < BlockNotAdded
+    end
+
+    class BlockOnForkChain < BlockNotAdded
+    end
 
     # Desired time between blocks
-    BLOCK_DURATION   = 60.0
+    BLOCK_DURATION = 60.0
     # Number of blocks between difficulty adjustments
-    UPDATE_FREQUENCY =   60
+    UPDATE_FREQUENCY = 60
 
     include Emitter(Block -> Void)
 
@@ -26,7 +33,7 @@ module Zincir
     abstract def queue_block(block)
 
     def blocks_at(indexes : Enumerable(Int32))
-      indexes = indexes.select do |index| 
+      indexes = indexes.select do |index|
         index <= last.index
       end
 
