@@ -7,6 +7,8 @@
 
 ## Node
 
+- Prune old branches in blockchain when it's synced with the network
+- When pruning the blockchain remove their corresponding block files
 - If block is already received or in the queue disregard
 - Save know node ips to file system for future use
 - Keep a list of offline ips and try to connect them periodically

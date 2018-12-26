@@ -16,22 +16,11 @@ module Zincir
         block_size = blocks.size
         blocks = blocks.sort_by!(&.index)
 
-        loop do
-          break if blocks.empty?
-
-          block = blocks.shift
-
-          blockchain.queue_block block
-        rescue Blockchain::BlockNotPreferred
-          # TODO: delete the file
-          puts "Notpreferred #{block}"
-        rescue Blockchain::BlockOnForkChain
-          # TODO: delete the file
-          puts "BlockOnForkChain #{block}"
+        until blocks.empty?
+          blockchain.queue_block blocks.shift
         end
 
-        puts "#{block_size} blocks are read from the file system"
-        puts "Finished reading the chain from file system"
+        puts "Finished reading #{block_size} from file system"
       end
     end
   end
