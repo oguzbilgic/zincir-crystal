@@ -34,16 +34,20 @@ module Zincir
     end
 
     # Returns the `Block` at *index*
+    #
+    # NOTE: This finds the correct block comparing the branch property of
+    # the tip block and the blocks at the given index. There might be a 
+    # easier way to find the block
     def block_at(index)
-      parent = highest_chain
-
       chains = @chains_by_index[index].map do |chain|
-        count = (chain.branches & highest_chain.branches).size
+        intersection = (chain.branches & highest_chain.branches)
+        difference = (highest_chain.branches + chain.branches - intersection).uniq
+        count = intersection.size-difference.size
 
         {chain: chain, count: count}
       end
 
-      chains.sort_by(&.["count"]).first["chain"].block
+      chains.sort_by(&.["count"]).last["chain"].block
     end
 
     # Queues the *block* to be added to the blockchain
