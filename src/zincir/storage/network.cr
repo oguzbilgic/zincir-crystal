@@ -70,24 +70,18 @@ module Zincir
         end
       end
 
-      private def download(blockchain, network, ending_index)
-        puts "Downloading blockchain"
-        index = network.last_block.index
-        loop do
-          puts "Fetching block at #{ending_index}"
-          break if ending_index > index
-          # puts "Fetching index: #{index}"
-          block = network.block_at ending_index
+      private def download(blockchain, network, starting_index)
+        ending_index = network.last_block.index
+        indexes = (starting_index+1..ending_index)
 
-          blockchain.queue_block block
-          ending_index +=1
-        rescue Blockchain::BlockOnForkChain
-          puts "BlockOnForkChain #{block}"
-          next
-        rescue Blockchain::BlockNotPreferred
-          puts "BlockNotPreferred #{block}"
-          broadcast blockchain, network, block.not_nil!.index
-          break
+        indexes.each_slice 1000 do |slice|
+          range = slice.first..slice.last
+          puts "Downloading blocks: #{range}"
+          blocks = network.blocks_at slice.first..slice.last+1
+
+          blocks.each do |block|
+            blockchain.queue_block block
+          end
         end
 
         puts "Finished downloading the chain from the network"

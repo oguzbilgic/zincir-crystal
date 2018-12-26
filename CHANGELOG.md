@@ -2,6 +2,7 @@
 
 ## Node
 - Make `/blocks/` endpoint handle index range and array
+- Download 1000 blocks at a time when syncing with the network
 
 ## Code
 - Add `{Blockchain, Network, Node}#blocks_at`
