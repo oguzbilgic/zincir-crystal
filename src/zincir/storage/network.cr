@@ -17,6 +17,12 @@ module Zincir
           puts "Network error: #{e}"
         end
 
+        blockchain.on :block do |block|
+          next if received_block_hashes.includes? block.hash
+
+          network.broadcast_block block
+        end
+
         if network.public_nodes.empty?
           puts "Can't download or broadcast to network, no public nodes"
           return
@@ -38,12 +44,6 @@ module Zincir
         end
 
         check_sync_status blockchain, network
-
-        blockchain.on :block do |block|
-          next if received_block_hashes.includes? block.hash
-
-          network.broadcast_block block
-        end
       end
 
       def find_mutual_block(blockchain, network, lowest)
