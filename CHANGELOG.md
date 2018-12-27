@@ -1,7 +1,9 @@
-# next
+# v0.7.1
 
 ## Node
 
+- Fix a bug in which a node with --local option, wasn't broadcasting the 
+  mined blocks
 - Don't log blockchain when reading from the network or filesystem
 
 ## Code 
@@ -11,10 +13,12 @@
 # v0.7.0
 
 ## Node
+
 - Make `/blocks/` endpoint handle index range and array
 - Download 1000 blocks at a time when syncing with the network
 
 ## Code
+
 - Add `{Blockchain, Network, Node}#blocks_at`
 
 # v0.6.0
