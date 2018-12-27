@@ -62,6 +62,7 @@ module Zincir
       @nodes.each do |node|
         node.broadcast_block block
       rescue
+        puts "Error broadcasting #{block}"
         next
       end
     end
