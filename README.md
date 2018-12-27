@@ -66,9 +66,29 @@ provided ip and port configuration
 
 ## Development
 
+### High Level Overview
+
+- Read and add cached blocks from `.blocks/` folder to blockchain. Whenever a 
+  new block is added to the chain, store it in the `.blocks/` folder
+- Unless `--local-net` is set, connect to seed host (testnet by default, can be 
+  updated with `--seed-ip` option)
+  * Compare our last block to network's last block
+  * Find the highest common block between network and local
+  * If network has a higher last block download all blocks between `common_block` 
+    and network's last block
+  * If our last block is higher, broadcast all blocks between the `common_block` 
+    and our last block
+  * Once the network download or broadcast is complete, wait for 5 seconds and 
+    compare local and network last block's to ensure network and local is synced
+- If `--web` or `--port` option is provided start local web server
+- If `--host-ip` option is provided start public web server and broadcast our ip to 
+  all the connected hosts.
+- If `--mine` option is set start the miner to mine new blocks. When a new block 
+  is mined broadcast it to network
+
 ### Run tests
 
 ```bash
-$ crystal spec
+> crystal spec
   ...
 ```
