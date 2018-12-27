@@ -50,6 +50,8 @@ module Zincir
       # Sync with network
       Storage::Network.load_and_sync blockchain, network
 
+      blockchain.verbose = true
+
       # Start web server if enabled
       if options.web? || options.port || options.host_ip
         spawn Web.start! network, blockchain, options.port, options.host_ip

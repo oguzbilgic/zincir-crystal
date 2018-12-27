@@ -7,15 +7,13 @@
 
 ## Node
 
+- Don't die/exit if the seed node is not reachable
 - Prune old branches in blockchain when it's synced with the network
 - When pruning the blockchain remove their corresponding block files
-- If block is already received or in the queue disregard
 - Save know node ips to file system for future use
 - Keep a list of offline ips and try to connect them periodically
-- Add `-d` `--daemon` CLI option
 - Use `~/.zincir` folder for configuration and blockchain cache
 - Add CLI option to override `~/.zincir` directory
-- Log to a file if It's started as a daemon
 
 ## Code
 

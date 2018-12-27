@@ -84,7 +84,7 @@ module Zincir
           end
         end
 
-        puts "Finished downloading the chain from the network"
+        puts "\nFinished downloading the chain from the network"
       end
 
       def check_sync_status(blockchain, network)

@@ -2,6 +2,7 @@ module Zincir
   module Miner
     # Starts mining the blockchain
     def self.start!(blockchain)
+      puts "Starting block miner..."
       new_block_channel = Channel(Bool).new
 
       blockchain.on :block do |block|
@@ -40,7 +41,6 @@ module Zincir
         block = Block.new index.to_i, timestamp.to_i64, data, last_block.hash, difficulty, nonce
 
         blockchain.queue_block block
-      rescue Blockchain::BlockNotAdded
       end
     end
   end

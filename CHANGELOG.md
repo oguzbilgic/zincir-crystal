@@ -1,3 +1,13 @@
+# next
+
+## Node
+
+- Don't log blockchain when reading from the network or filesystem
+
+## Code 
+
+- Add `Blockchain#verbose` property
+
 # v0.7.0
 
 ## Node

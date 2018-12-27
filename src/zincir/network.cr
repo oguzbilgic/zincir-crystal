@@ -38,11 +38,11 @@ module Zincir
 
       node.on_close do
         @nodes.delete node
-        puts "Connection is closed #{node.ip} (#{@nodes.size})"
+        puts "Disconnected from #{node} (#{@nodes.size})"
       end
 
       @nodes << node
-      puts "New connection #{node} (#{@nodes.size})"
+      puts "Connected to #{node} (#{@nodes.size})"
     end
 
     # Returns a list connected public node

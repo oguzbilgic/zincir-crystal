@@ -59,7 +59,7 @@ module Zincir
     end
 
     def to_s(io)
-      io << @ip
+      @ip ? io << @ip : io << "private node"
     end
 
     def broadcast_block(block)

@@ -4,22 +4,20 @@ require "./block"
 
 module Zincir
   abstract class Blockchain
-    class BlockNotAdded < ::Exception
-    end
+    class BlockNotAdded < ::Exception; end
 
-    class BlockIndexTooHigh < BlockNotAdded
-    end
+    class BlockIndexTooHigh < BlockNotAdded; end
 
-    class BlockNotPreferred < BlockNotAdded
-    end
+    class BlockNotPreferred < BlockNotAdded; end
 
-    class BlockOnForkChain < BlockNotAdded
-    end
+    class BlockOnForkChain < BlockNotAdded; end
 
     # Desired time between blocks
     BLOCK_DURATION = 60.0
     # Number of blocks between difficulty adjustments
     UPDATE_FREQUENCY = 60
+
+    property verbose = false
 
     include Emitter(Block -> Void)
 
@@ -32,16 +30,6 @@ module Zincir
     # Queues the *block* to be added to the blockchain
     abstract def queue_block(block)
 
-    def blocks_at(indexes : Enumerable(Int32))
-      indexes = indexes.select do |index|
-        index <= last.index
-      end
-
-      indexes.map do |index|
-        block_at index
-      end
-    end
-
     # Returns the required difficulty for the next `Block`
     def next_difficulty
       next_difficulty_at last
@@ -50,6 +38,16 @@ module Zincir
     # Returns the index of the expected `Block`
     def next_index
       last.index + 1
+    end
+
+    def blocks_at(indexes : Enumerable(Int32))
+      indexes = indexes.select do |index|
+        index <= last.index
+      end
+
+      indexes.map do |index|
+        block_at index
+      end
     end
 
     # Returns the required difficulty for the next `Block`
@@ -66,11 +64,13 @@ module Zincir
     end
 
     private def block_added(block)
+      print("\r") unless @verbose
       if block.mined_by_us?
-        puts "Mined".colorize(:green).to_s + " #{block}"
+        print "Mined".colorize(:green).to_s + " #{block}"
       else
-        puts "Added".colorize(:blue).to_s + " #{block}"
+        print "Added".colorize(:blue).to_s + " #{block}"
       end
+      print("\n") if @verbose
 
       emit :block, block
     end

@@ -8,9 +8,13 @@ module Zincir
           ::File.write ".blocks/#{block.hash}", block.to_json
         end
 
+        puts "Reading blocks from the filesystem cache..."
+
         blocks = Dir.open(".blocks/").children.map do |filename|
           file = ::File.read ".blocks/#{filename}"
           Block.from_json file
+        rescue
+          raise filename
         end
 
         block_size = blocks.size
@@ -20,7 +24,7 @@ module Zincir
           blockchain.queue_block blocks.shift
         end
 
-        puts "Finished reading #{block_size} from file system"
+        puts "\nFinished reading #{block_size} from file system"
       end
     end
   end
