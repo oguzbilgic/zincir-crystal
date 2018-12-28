@@ -13,7 +13,7 @@ module Zincir
       )
 
       def initialize(@block : Block, @parent = nil, new_branch? = false)
-        @branches = @parent.not_nil!.branches if @parent
+        @branches = @parent.not_nil!.branches.dup if @parent
 
         @branches << UUID.random if new_branch?
       end
