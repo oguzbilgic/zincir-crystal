@@ -39,7 +39,7 @@ module Zincir
     end
 
     def self.run!(options : Options)
-      blockchain = Blockchain::Tree.new
+      blockchain = Blockchain.new
 
       seed_ip = options.local? ? nil : options.seed_ip
       network = Network.new seed_ip
