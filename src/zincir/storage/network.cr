@@ -82,6 +82,8 @@ module Zincir
           blocks.each do |block|
             blockchain.queue_block block
           end
+        rescue e
+          puts "Error downloading blocks #{e}"
         end
 
         puts "\nFinished downloading the chain from the network"
