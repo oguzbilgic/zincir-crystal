@@ -113,6 +113,7 @@ module Zincir
       end
 
       orphans.each do |orphan|
+        puts "Adding orphan #{orphan}"
         @orphans.delete orphan
         queue_block orphan
       end
@@ -120,7 +121,10 @@ module Zincir
 
     def queue_block(block : Block)
       # Check if the block is already in the chain
-      return if @chains_by_hash[block.hash]?
+      if @chains_by_hash[block.hash]?
+        puts "Block is already in the chain #{block}"
+        return
+      end
 
       unless block.valid?
         raise BlockNotAdded.new "Invalid block at index #{block.index}"
