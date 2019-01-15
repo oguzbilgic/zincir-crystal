@@ -1,3 +1,10 @@
+# v0.8.0
+
+## Code
+
+- Merge `Blockchain::Tree` into `Blockchain`
+- Remove `Blockchain::Array`
+
 # v0.7.1
 
 ## Node
